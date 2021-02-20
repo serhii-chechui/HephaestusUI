@@ -1,0 +1,20 @@
+{
+    "name": "Unity.HephaestusUI.Editor",
+    "references": [
+        "GUID:7e72812d87c4146dcbc3e1351ae816ae",
+        "GUID:343deaaf83e0cee4ca978e7df0b80d21"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [
+        ""
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
