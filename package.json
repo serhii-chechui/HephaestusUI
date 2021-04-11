@@ -13,10 +13,10 @@
   "author": {
     "name": "WTFGames",
     "email": "serhii.chechui@gmail.com",
-    "url": "https://github.com/serhii-chechui/HephaestusAnalytics"
+    "url": "https://github.com/serhii-chechui/HephaestusUI"
   },
   "dependencies": {
-    "com.wtfgames.hephaestus.core": "0.0.1"
+    "com.wtfgames.hephaestus.core": "0.0.3"
   }
 }
         
