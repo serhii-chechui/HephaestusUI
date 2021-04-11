@@ -12,7 +12,7 @@ namespace HephaestusMobile.UISystem.WidgetView {
 
         #endregion
 
-        public Transform Transform { get; }
+        Transform Transform { get; }
 
         void Create();
         void Activate(bool animated);
