@@ -1,6 +1,7 @@
 using HephaestusMobile.UISystem.Configs;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
@@ -104,6 +105,7 @@ namespace HephaestusMobile.UISystem.Editor {
             uiManagerConfig.orthographicSize = EditorGUILayout.FloatField("Orthographic Size:", uiManagerConfig.orthographicSize);
             uiManagerConfig.cameraClearFlags = (CameraClearFlags)EditorGUILayout.EnumPopup("Camera Clear Flags:", uiManagerConfig.cameraClearFlags);
             uiManagerConfig.backgroundColor  = EditorGUILayout.ColorField("Background Color:", uiManagerConfig.backgroundColor);
+            uiManagerConfig.cameraRenderType = (CameraRenderType)EditorGUILayout.EnumPopup("Camera Render Type:", CameraRenderType.Base);
         
             EditorGUILayout.Space();
 

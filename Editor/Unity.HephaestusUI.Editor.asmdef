@@ -2,7 +2,8 @@
     "name": "Unity.HephaestusUI.Editor",
     "references": [
         "GUID:7e72812d87c4146dcbc3e1351ae816ae",
-        "GUID:343deaaf83e0cee4ca978e7df0b80d21"
+        "GUID:343deaaf83e0cee4ca978e7df0b80d21",
+        "GUID:15fc0a57446b3144c949da3e2b9737a9"
     ],
     "includePlatforms": [
         "Editor"

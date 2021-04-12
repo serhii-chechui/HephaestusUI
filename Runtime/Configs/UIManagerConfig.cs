@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 namespace HephaestusMobile.UISystem.Configs {
@@ -38,5 +39,8 @@ namespace HephaestusMobile.UISystem.Configs {
         public float orthographicSize = 2.5f;
         public Color backgroundColor = Color.grey;
         public CameraClearFlags cameraClearFlags;
+        
+        //public
+        public CameraRenderType cameraRenderType;
     }
 }

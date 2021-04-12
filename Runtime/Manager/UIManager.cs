@@ -7,6 +7,7 @@ using HephaestusMobile.UISystem.WidgetController;
 using HephaestusMobile.UISystem.WidgetView;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 using Zenject;
 
@@ -85,6 +86,8 @@ namespace HephaestusMobile.UISystem.Manager {
             UiCamera.backgroundColor  = Color.grey;
             UiCamera.allowHDR         = false;
             UiCamera.allowMSAA        = false;
+            
+            UiCamera.GetComponent<UniversalAdditionalCameraData>().renderType = uiManagerConfig.cameraRenderType;
 
             if (uiManagerConfig.createAudioListener) {
                 uiCameraGo.AddComponent<AudioListener>();
