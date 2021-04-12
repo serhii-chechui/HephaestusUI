@@ -87,7 +87,7 @@ namespace HephaestusMobile.UISystem.Manager {
             UiCamera.allowHDR         = false;
             UiCamera.allowMSAA        = false;
             
-            UiCamera.GetComponent<UniversalAdditionalCameraData>().renderType = uiManagerConfig.cameraRenderType;
+            UiCamera.GetUniversalAdditionalCameraData().renderType = uiManagerConfig.cameraRenderType;
 
             if (uiManagerConfig.createAudioListener) {
                 uiCameraGo.AddComponent<AudioListener>();
