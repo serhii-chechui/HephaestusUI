@@ -16,7 +16,7 @@
     "url": "https://github.com/serhii-chechui/HephaestusUI"
   },
   "dependencies": {
-    "com.wtfgames.hephaestus.core": ">=0.0.3",
+    "com.wtfgames.hephaestus.core": ">=0.0.4",
     "com.unity.render-pipelines.universal": ">=7.3.1"
   }
 }
