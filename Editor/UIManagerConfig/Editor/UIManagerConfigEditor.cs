@@ -105,7 +105,7 @@ namespace HephaestusMobile.UISystem.Editor {
             uiManagerConfig.orthographicSize = EditorGUILayout.FloatField("Orthographic Size:", uiManagerConfig.orthographicSize);
             uiManagerConfig.cameraClearFlags = (CameraClearFlags)EditorGUILayout.EnumPopup("Camera Clear Flags:", uiManagerConfig.cameraClearFlags);
             uiManagerConfig.backgroundColor  = EditorGUILayout.ColorField("Background Color:", uiManagerConfig.backgroundColor);
-            uiManagerConfig.cameraRenderType = (CameraRenderType)EditorGUILayout.EnumPopup("Camera Render Type:", CameraRenderType.Base);
+            uiManagerConfig.cameraRenderType = (CameraRenderType)EditorGUILayout.EnumPopup("Camera Render Type:", uiManagerConfig.cameraRenderType);
         
             EditorGUILayout.Space();
 
