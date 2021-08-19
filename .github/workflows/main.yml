@@ -1,4 +1,4 @@
-    name: Publish to npm
+    name: Publish to Verdaccio
      
     # Controls when the action will run.
     # In this case, I'm saying on each release event when it's specifically a new release publish, the types: [published] is required here,
@@ -11,18 +11,6 @@
       build:
        runs-on: ubuntu-latest
        steps:
-       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-       - uses: actions/checkout@v2
-       #Install Node.js, with the version 12 and using the registry URL of npm, this could be changed to a custom registry or the GitHub registry.
-       - uses: actions/setup-node@v1
-         with:
-           node-version: 14
-           registry-url: https://registry.npmjs.org/
-     
-       # Command to install the package dependencies
-       - run: yarn install
        
-       # Publish to npm
-       - run: npm publish --access public
-         env:
-           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+       # Publish to Verdaccio
+       - run: npm publish --registry http://18.197.210.148:4873/
