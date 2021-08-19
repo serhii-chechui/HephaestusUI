@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.0.5] - 2021-04-24
+- Updated version to publish with Verdaccio.
+
 ## [0.0.4] - 2021-04-12
 - Added parameter for URP camera render type.
 

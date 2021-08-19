@@ -1,6 +1,6 @@
 {
   "name": "com.wtfgames.hephaestus.ui",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "displayName": "Hephaestus UI",
   "description": "Hephaestus UI is a part of the Hephaestus Core framework that helps operate with UI.",
   "unity": "2019.2",
@@ -20,6 +20,7 @@
     "com.unity.render-pipelines.universal": ">=7.3.1"
   }
 }
+        
         
         
         
