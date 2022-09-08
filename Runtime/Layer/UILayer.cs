@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using HephaestusMobile.UISystem.Manager;
+using Handler;
 using HephaestusMobile.UISystem.WidgetView;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,7 +18,8 @@ namespace HephaestusMobile.UISystem.Layer {
 
         #region Public Methods
 
-        public void Init(UIManager uiManager, int order = 0, float planeDistance = 1f, RenderMode renderMode = RenderMode.ScreenSpaceOverlay) {
+        public void Init(UIManagerHandler uiManagerHandler, int order = 0, float planeDistance = 1f, RenderMode renderMode = RenderMode.ScreenSpaceOverlay) {
+            
             gameObject.layer = LayerMask.NameToLayer("UI");
 
             if (_canvas == null) {
@@ -29,10 +30,10 @@ namespace HephaestusMobile.UISystem.Layer {
 
             switch (renderMode) {
                 case RenderMode.ScreenSpaceCamera:
-                    _canvas.worldCamera = uiManager.UiCamera;
+                    _canvas.worldCamera = uiManagerHandler.UiCamera;
                     break;
                 case RenderMode.WorldSpace:
-                    _canvas.worldCamera = uiManager.UiCamera;
+                    _canvas.worldCamera = uiManagerHandler.UiCamera;
                     break;
             }
 
@@ -61,11 +62,8 @@ namespace HephaestusMobile.UISystem.Layer {
         /// <param name="widget">Widget object.</param>
         public void RegisterWidget(string widgetType, IWidget widget) {
             _widgets.Add(widgetType, widget);
-
             widget.Transform.SetParent(transform, false);
-
             widget.OnDismissed += OnWidgetDismissed;
-            Debug.LogFormat("Registered: {0}", widget.Transform.name);
         }
 
         /// <summary>

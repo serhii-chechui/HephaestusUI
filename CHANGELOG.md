@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.0] - 2022-09-08
+- Reworked and changed approach for UIManager initialization. Added an entity for UIManagerHelper as MonoBehaviour class.
+
 ## [0.0.5] - 2021-04-24
 - Updated version to publish with Verdaccio.
 
