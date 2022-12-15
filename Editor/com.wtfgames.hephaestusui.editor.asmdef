@@ -1,5 +1,6 @@
 {
-    "name": "Unity.HephaestusUI.Editor",
+    "name": "com.wtfgames.hephaestusui.editor",
+    "rootNamespace": "",
     "references": [
         "GUID:7e72812d87c4146dcbc3e1351ae816ae",
         "GUID:343deaaf83e0cee4ca978e7df0b80d21",
@@ -19,6 +20,12 @@
     ],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.render-pipelines.universal",
+            "expression": "12.1.7",
+            "define": "USE_URP"
+        }
+    ],
     "noEngineReferences": false
 }

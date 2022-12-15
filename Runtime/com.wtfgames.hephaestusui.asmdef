@@ -1,5 +1,6 @@
 {
-    "name": "Unity.HephaestusUI",
+    "name": "com.wtfgames.hephaestusui",
+    "rootNamespace": "HephaestusMobile.UISystem",
     "references": [
         "GUID:0d8beb7f090555447a6cf5ce9e54dbb4",
         "GUID:15fc0a57446b3144c949da3e2b9737a9",
@@ -13,6 +14,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.render-pipelines.universal",
+            "expression": "12.1.7",
+            "define": "USE_URP"
+        }
+    ],
     "noEngineReferences": false
 }

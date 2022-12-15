@@ -85,7 +85,9 @@ namespace Handler
             UiCamera.allowHDR         = false;
             UiCamera.allowMSAA        = false;
             
+            #if USE_URP
             UiCamera.GetUniversalAdditionalCameraData().renderType = uiManagerConfig.cameraRenderType;
+            #endif
 
             if (uiManagerConfig.createAudioListener) {
                 uiCameraGo.AddComponent<AudioListener>();

@@ -39,8 +39,10 @@ namespace HephaestusMobile.UISystem.Configs {
         public float orthographicSize = 2.5f;
         public Color backgroundColor = Color.grey;
         public CameraClearFlags cameraClearFlags;
-        
+
+        #if USE_URP
         //public
         public CameraRenderType cameraRenderType;
+        #endif
     }
 }
