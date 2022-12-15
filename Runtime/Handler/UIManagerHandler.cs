@@ -8,7 +8,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using HephaestusMobile.UISystem.WidgetsLibrary;
 using HephaestusMobile.UISystem.WidgetView;
+#if USE_URP
 using UnityEngine.Rendering.Universal;
+#endif
 using UnityEngine.UI;
 
 namespace Handler
