@@ -18,6 +18,10 @@
   "dependencies": {
 	"com.svermeulen.extenject": "^9.2.0",
     "com.wtfgames.hephaestus.core": "^1.0.0"
+  },
+  "publishConfig": {
+	"registry": "http://18.195.169.73:4873/"
   }
 }
+        
         
