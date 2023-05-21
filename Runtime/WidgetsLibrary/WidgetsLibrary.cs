@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using HephaestusMobile.UISystem.WidgetView;
 using UnityEngine;
 
@@ -6,20 +7,22 @@ namespace HephaestusMobile.UISystem.WidgetsLibrary {
     [CreateAssetMenu(fileName = "WidgetsLibrary", menuName = "HephaestusMobile/Core/UI/WidgetsLibrary")]
     public class WidgetsLibrary : ScriptableObject {
         
+        public WidgetsLibraryConstants widgetsLibraryConstants;
+        
         [HideInInspector] public List<WidgetsLibraryData> widgetLinks = new List<WidgetsLibraryData>();
 
-        public GameObject GetPrefabByType(string widgetType) {
-            var prefab = widgetLinks.Find(w => w.WidgetType == widgetType).WidgetPrefab;
+        public GameObject GetPrefabByType(Enum widgetType) {
+            var prefab = widgetLinks.Find(w => w.WidgetType == Convert.ToInt32(widgetType)).WidgetPrefab;
             return prefab;
         }
 
-        public IWidget GetWidgetByType(string widgetType) {
-            var widget = widgetLinks.Find(w => w.WidgetType == widgetType).WidgetPrefab.GetComponent<IWidget>();
+        public IWidget GetWidgetByType(Enum widgetType) {
+            var widget = widgetLinks.Find(w => w.WidgetType == Convert.ToInt32(widgetType)).WidgetPrefab.GetComponent<IWidget>();
             return widget;
         }
 
-        public int GetLayerByType(string widgetType) {
-            var layer = widgetLinks.Find(w => w.WidgetType == widgetType).WidgetLayer;
+        public int GetLayerByType(Enum widgetType) {
+            var layer = widgetLinks.Find(w => w.WidgetType == Convert.ToInt32(widgetType)).WidgetLayer;
             return layer;
         }
     }

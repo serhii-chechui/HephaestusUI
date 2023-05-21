@@ -8,7 +8,10 @@ using UnityEngine.UI;
 namespace HephaestusMobile.UISystem.Configs {
     
     [CreateAssetMenu(fileName = "UIManagerConfig", menuName = "HephaestusMobile/Core/UI/UIManagerConfig")]
-    public class UIManagerConfig : ScriptableObject {
+    public class UIManagerConfig : ScriptableObject
+    {
+
+        public bool sharedInstance;
         
         public List<string> uiLayersList = new List<string>();
 

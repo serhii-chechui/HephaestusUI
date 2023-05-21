@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HephaestusMobile.UISystem.WidgetsLibrary {
     [Serializable]
     public class WidgetsLibraryData {
-        public string WidgetType;
+        public int WidgetType;
         public GameObject WidgetPrefab;
         public int WidgetLayer;
     }

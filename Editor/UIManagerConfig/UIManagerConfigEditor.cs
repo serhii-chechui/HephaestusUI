@@ -29,6 +29,8 @@ namespace HephaestusMobile.UISystem.Editor {
             EditorGUILayout.Space();
         
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+
+            uiManagerConfig.sharedInstance = EditorGUILayout.Toggle("Shared Instance", uiManagerConfig.sharedInstance);
         
             EditorGUILayout.LabelField("UI Layers:", EditorStyles.boldLabel);
         
@@ -101,6 +103,7 @@ namespace HephaestusMobile.UISystem.Editor {
             EditorGUILayout.LabelField("UI Camera:", EditorStyles.boldLabel);
 
             uiManagerConfig.createUICamera   = EditorGUILayout.Toggle("Create UI Camera", uiManagerConfig.createUICamera);
+            uiManagerConfig.sharedInstance   = EditorGUILayout.Toggle("UI Camera Shared Instance", uiManagerConfig.sharedInstance);
             uiManagerConfig.createAudioListener = EditorGUILayout.Toggle("Create Audio Listener", uiManagerConfig.createAudioListener);
             uiManagerConfig.cameraDepth      = EditorGUILayout.IntField("UI Camera Depth:", uiManagerConfig.cameraDepth);
             uiManagerConfig.orthographic     = EditorGUILayout.Toggle("IS UI Camera Orthographic:", uiManagerConfig.orthographic);

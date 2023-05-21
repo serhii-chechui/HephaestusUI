@@ -15,6 +15,7 @@ using UnityEngine.UI;
 
 namespace Handler
 {
+    [RequireComponent(typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster))]
     public class UIManagerHandler : MonoBehaviour
     {
         #region Public Variables
@@ -31,6 +32,8 @@ namespace Handler
         private GraphicRaycaster _graphicRaycaster;
         
         private List<UILayer> _uiLayers;
+
+        private EventSystem _eventSystem;
         
         public void Initialize(UIManagerConfig uiManagerConfig, WidgetFactory widgetFactory)
         {
@@ -41,64 +44,75 @@ namespace Handler
             gameObject.layer = LayerMask.NameToLayer("UI");
             
             if(_widgetLibrary == null) {
-                _widgetLibrary = uiManagerConfig.widgetsLibrary;
+                _widgetLibrary = _uiManagerConfig.widgetsLibrary;
             }
 
             // Add Canvas component
             if(_canvas == null) {
-                _canvas = gameObject.AddComponent<Canvas>();
+                _canvas = GetComponent<Canvas>();
             }
-            
-            _canvas.worldCamera = UiCamera;
-            
-            _canvas.renderMode = uiManagerConfig.renderMode;
-            _canvas.planeDistance = uiManagerConfig.planeDistance;
+
+            _canvas.renderMode = _uiManagerConfig.renderMode;
+            _canvas.planeDistance = _uiManagerConfig.planeDistance;
 
             // Add CanvasScaler
             if(_canvasScaler == null) {
-                _canvasScaler = gameObject.AddComponent<CanvasScaler>();
+                _canvasScaler = GetComponent<CanvasScaler>();
             }
             
             // Add raycaster
             if (_graphicRaycaster == null)
             {
-                _graphicRaycaster = gameObject.AddComponent<GraphicRaycaster>();
+                _graphicRaycaster = GetComponent<GraphicRaycaster>();
             }
 
-            _canvasScaler.uiScaleMode = uiManagerConfig.canvasScaleMode;
-            _canvasScaler.screenMatchMode = uiManagerConfig.canvasScreenMatchMode;
-            _canvasScaler.referenceResolution = new Vector2(uiManagerConfig.ReferenceResolution.x, uiManagerConfig.ReferenceResolution.y);
-            _canvasScaler.matchWidthOrHeight = uiManagerConfig.matchWidthOrHeight;
+            _canvasScaler.uiScaleMode = _uiManagerConfig.canvasScaleMode;
+            _canvasScaler.screenMatchMode = _uiManagerConfig.canvasScreenMatchMode;
+            _canvasScaler.referenceResolution = new Vector2(_uiManagerConfig.ReferenceResolution.x, _uiManagerConfig.ReferenceResolution.y);
+            _canvasScaler.matchWidthOrHeight = _uiManagerConfig.matchWidthOrHeight;
 
-            CreateUILayers(uiManagerConfig);
+            CreateUILayers(_uiManagerConfig);
 
-            if (UiCamera != null || !uiManagerConfig.createUICamera) return;
+            if (UiCamera == null && _uiManagerConfig.createUICamera)
+            {
+                var uiCameraGo = new GameObject("UICamera");
+                uiCameraGo.transform.position = new Vector3(0, 0, -10);
+
+                UiCamera                  = uiCameraGo.AddComponent<Camera>();
+                UiCamera.cullingMask      = 1 << LayerMask.NameToLayer("UI");
+                UiCamera.orthographic     = _uiManagerConfig.orthographic;
+                UiCamera.orthographicSize = _uiManagerConfig.orthographicSize;
+                UiCamera.clearFlags       = _uiManagerConfig.cameraClearFlags;
+                UiCamera.backgroundColor  = Color.grey;
+                UiCamera.allowHDR         = false;
+                UiCamera.allowMSAA        = false;
             
-            var uiCameraGo = new GameObject("UICamera");
-            uiCameraGo.transform.position = new Vector3(0, 0, -10);
-            DontDestroyOnLoad(uiCameraGo);
+                #if USE_URP
+                UiCamera.GetUniversalAdditionalCameraData().renderType = _uiManagerConfig.cameraRenderType;
+                #endif
 
-            UiCamera                  = uiCameraGo.AddComponent<Camera>();
-            UiCamera.cullingMask      = 1 << LayerMask.NameToLayer("UI");
-            UiCamera.orthographic     = uiManagerConfig.orthographic;
-            UiCamera.orthographicSize = uiManagerConfig.orthographicSize;
-            UiCamera.clearFlags       = uiManagerConfig.cameraClearFlags;
-            UiCamera.backgroundColor  = Color.grey;
-            UiCamera.allowHDR         = false;
-            UiCamera.allowMSAA        = false;
-            
-            #if USE_URP
-            UiCamera.GetUniversalAdditionalCameraData().renderType = uiManagerConfig.cameraRenderType;
-            #endif
+                _canvas.worldCamera = UiCamera;
 
-            if (uiManagerConfig.createAudioListener) {
-                uiCameraGo.AddComponent<AudioListener>();
+                if (_uiManagerConfig.createAudioListener) {
+                    UiCamera.gameObject.AddComponent<AudioListener>();
+                }
             }
+
+            if (EventSystem.current == null)
+            {
+                var newEventsSystem = new GameObject("EvensSystem", typeof(EventSystem), typeof(StandaloneInputModule));
+                _eventSystem = newEventsSystem.GetComponent<EventSystem>();
+            }
+            else
+            {
+                _eventSystem = EventSystem.current;
+            }
+
+            if (!_uiManagerConfig.sharedInstance) return;
             
             DontDestroyOnLoad(gameObject);
-            
-            var eventsSystem = new GameObject("EvensSystem", typeof(EventSystem), typeof(StandaloneInputModule));
-            DontDestroyOnLoad(eventsSystem.gameObject);
+            DontDestroyOnLoad(UiCamera.gameObject);
+            DontDestroyOnLoad(_eventSystem.gameObject);
         }
         
         #region Private Methods
@@ -144,7 +158,7 @@ namespace Handler
         
         #endregion
 
-        public IWidget CreateUiWidgetWithData(string widgetType, object data, bool animate, bool allowDuplicates)
+        public IWidget CreateUiWidgetWithData(Enum widgetType, object data, bool animate, bool allowDuplicates)
         {
             //Find related UILayer
             var layer = _uiLayers[_widgetLibrary.GetLayerByType(widgetType)];
@@ -154,8 +168,6 @@ namespace Handler
                 Debug.LogWarning($"Widget of type {widgetType}, already exists at: {layer.name}");
                 return null;
             }
-            
-            var widgetGuid = Guid.NewGuid().ToString();
 
             //Instantiate new Widget Prefab
             // var widgetPrefab = Instantiate(_widgetLibrary.GetPrefabByType(widgetType));
@@ -164,7 +176,7 @@ namespace Handler
             var widget = _widgetFactory.Create(_widgetLibrary.GetPrefabByType(widgetType));
 
             //Register it in UILayer
-            layer.RegisterWidget(allowDuplicates ? widgetGuid : widgetType, widget);
+            layer.RegisterWidget(widgetType, widget);
 
             var controller = widget.Transform.GetComponent<IWidgetControllerWithData>();
             controller.Initialize(widget, data);
@@ -175,7 +187,7 @@ namespace Handler
             return widget;
         }
 
-        public void ActivateWidgetByType(string widgetType, bool animated)
+        public void ActivateWidgetByType(Enum widgetType, bool animated)
         {
             //Find related UILayer
             var layer = _uiLayers[_widgetLibrary.GetLayerByType(widgetType)];
@@ -188,7 +200,7 @@ namespace Handler
             layer.GetWidgetByType(widgetType).Activate(animated);
         }
 
-        public void DeactivateWidgetByType(string widgetType, bool animated)
+        public void DeactivateWidgetByType(Enum widgetType, bool animated)
         {
             //Find related UILayer
             var layer = _uiLayers[_widgetLibrary.GetLayerByType(widgetType)];
@@ -201,7 +213,7 @@ namespace Handler
             layer.GetWidgetByType(widgetType).Deactivate(animated);
         }
 
-        public void DismissWidgetByType(string widgetType)
+        public void DismissWidgetByType(Enum widgetType)
         {
             //Find related UILayer
             var layer = _uiLayers[_widgetLibrary.GetLayerByType(widgetType)];

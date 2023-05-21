@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using HephaestusMobile.UISystem.Configs;
-using HephaestusMobile.UISystem.Layer;
+﻿using System;
 using HephaestusMobile.UISystem.WidgetView;
 
 namespace HephaestusMobile.UISystem.Manager {
@@ -29,27 +27,27 @@ namespace HephaestusMobile.UISystem.Manager {
         /// <param name="data">WidgetData object.</param>
         /// <param name="animate">Should be widget animated.</param>
         /// <param name="allowDuplicates">Allows to create multiple widgets of the the same type.</param>
-        IWidget CreateUiWidgetWithData(string widgetType, object data = null, bool animate = false, bool allowDuplicates = false);
+        IWidget CreateUiWidgetWithData(Enum widgetType, object data = null, bool animate = false, bool allowDuplicates = false);
 
         /// <summary>
         /// Activates widget by it's type.
         /// </summary>
         /// <param name="widgetType">Widget name from WidgetsLibrary.</param>
         /// <param name="animated">Should be animated.</param>
-        void ActivateWidgetByType(string widgetType, bool animated = false);
+        void ActivateWidgetByType(Enum widgetType, bool animated = false);
 
         /// <summary>
         /// Deactivates widget by it's type.
         /// </summary>
         /// <param name="widgetType">Widget name from WidgetsLibrary.</param>
         /// <param name="animated">Should be animated.</param>
-        void DeactivateWidgetByType(string widgetType, bool animated = false);
+        void DeactivateWidgetByType(Enum widgetType, bool animated = false);
 
         /// <summary>
         /// Dismisses widget by it's type. 
         /// </summary>
         /// <param name="widgetType">Widget name from WidgetsLibrary.</param>
-        void DismissWidgetByType(string widgetType);
+        void DismissWidgetByType(Enum widgetType);
 
         /// <summary>
         /// Dismiss All Widgets. Useful in case of logout or other application context operations. 

@@ -1,5 +1,5 @@
 {
-    "name": "com.wtfgames.hephaestusui.editor",
+    "name": "com.wtfgames.hephaestus.ui.editor",
     "rootNamespace": "",
     "references": [
         "GUID:7e72812d87c4146dcbc3e1351ae816ae",

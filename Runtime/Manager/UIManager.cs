@@ -7,29 +7,25 @@ using UnityEngine.UI;
 using Zenject;
 
 namespace HephaestusMobile.UISystem.Manager {
-    [RequireComponent(typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster))]
     public class UIManager : IInitializable, IDisposable, IUIManager {
 
         #region Private Variables
 
         private GameObject _preloaderPrefab;
 
+        [Inject]
         private UIManagerConfig _uiManagerConfig;
 
+        [Inject]
         private WidgetFactory _widgetFactory;
         
         private UIManagerHandler _uiManagerHandler;
 
         #endregion
 
-        [Inject]
-        public void Construct( UIManagerConfig uiManagerConfig, WidgetFactory widgetFactory) {
-            _uiManagerConfig = uiManagerConfig;
-            _widgetFactory = widgetFactory;
-        }
-        
         public void Initialize()
         {
+            Debug.Log("UIManager.Initialize");
             _uiManagerHandler = new GameObject("UIManagerHandler").AddComponent<UIManagerHandler>();
             _uiManagerHandler.Initialize(_uiManagerConfig, _widgetFactory);
         }
@@ -63,25 +59,25 @@ namespace HephaestusMobile.UISystem.Manager {
         #region Public Methods
 
         /// <inheritdoc />
-        public IWidget CreateUiWidgetWithData(string widgetType, object data = null, bool animate = false, bool allowDuplicates = false)
+        public IWidget CreateUiWidgetWithData(Enum widgetType, object data = null, bool animate = false, bool allowDuplicates = false)
         {
             return _uiManagerHandler.CreateUiWidgetWithData(widgetType, data, animate, allowDuplicates);
         }
 
         /// <inheritdoc />
-        public void ActivateWidgetByType(string widgetType, bool animated = false)
+        public void ActivateWidgetByType(Enum widgetType, bool animated = false)
         {
             _uiManagerHandler.ActivateWidgetByType(widgetType, animated);
         }
 
         /// <inheritdoc />
-        public void DeactivateWidgetByType(string widgetType, bool animated = false)
+        public void DeactivateWidgetByType(Enum widgetType, bool animated = false)
         {
             _uiManagerHandler.DeactivateWidgetByType(widgetType, animated);
         }
         
         /// <inheritdoc />
-        public void DismissWidgetByType(string widgetType)
+        public void DismissWidgetByType(Enum widgetType)
         {
             _uiManagerHandler.DismissWidgetByType(widgetType);
         }

@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.0] - 2023-05-22
+
+### Added
+
+- Added ability use `WidgetsLibraryConstants` as a lis of keys for work with the UI wigdets;
+
 ## [1.0.0] - 2022-09-08
 - Reworked and changed approach for UIManager initialization. Added an entity for UIManagerHelper as MonoBehaviour class.
 
