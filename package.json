@@ -1,6 +1,6 @@
 {
   "name": "com.wtfgames.hephaestus.ui",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "displayName": "Hephaestus UI",
   "description": "Hephaestus UI is a part of the Hephaestus Core framework that helps operate with UI.",
   "unity": "2019.2",
@@ -16,10 +16,9 @@
     "url": "https://github.com/serhii-chechui/HephaestusUI"
   },
   "dependencies": {
-    "com.svermeulen.extenject": "^9.2.0",
-    "com.wtfgames.hephaestus.core": "^1.0.0"
+    "com.svermeulen.extenject": "9.2.0-stcf3"
   },
   "publishConfig": {
-    "registry": "http://18.195.169.73:4873/"
+    "registry": "http://upm.wtfgames.com.ua/"
   }
 }

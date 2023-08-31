@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1] - 2023-08-31
+
+### Changed
+
++ Updated the dependency;
++ Updated the publish section;
+
 ## [1.1.0] - 2023-05-22
 
 ### Added
