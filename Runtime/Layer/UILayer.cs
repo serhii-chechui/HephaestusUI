@@ -6,9 +6,11 @@ using HephaestusMobile.UISystem.WidgetView;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace HephaestusMobile.UISystem.Layer {
+namespace HephaestusMobile.UISystem.Layer
+{
     [RequireComponent(typeof(Canvas), typeof(GraphicRaycaster))]
-    public class UILayer : MonoBehaviour {
+    public class UILayer : MonoBehaviour
+    {
         #region Private Variables
 
         private readonly Dictionary<int, IWidget> _widgets = new Dictionary<int, IWidget>();
@@ -19,19 +21,22 @@ namespace HephaestusMobile.UISystem.Layer {
 
         #region Public Methods
 
-        public void Init(UIManagerHandler uiManagerHandler, int order = 0, float planeDistance = 1f, RenderMode renderMode = RenderMode.ScreenSpaceOverlay) {
-            
+        public void Init(UIManagerHandler uiManagerHandler, int order = 0, float planeDistance = 1f,
+            RenderMode renderMode = RenderMode.ScreenSpaceOverlay)
+        {
             Debug.Log("UILayer.Init");
-            
+
             gameObject.layer = LayerMask.NameToLayer("UI");
 
-            if (_canvas == null) {
+            if (_canvas == null)
+            {
                 _canvas = GetComponent<Canvas>();
             }
 
             _canvas.renderMode = renderMode;
 
-            switch (renderMode) {
+            switch (renderMode)
+            {
                 case RenderMode.ScreenSpaceCamera:
                     _canvas.worldCamera = uiManagerHandler.UiCamera;
                     break;
@@ -40,14 +45,16 @@ namespace HephaestusMobile.UISystem.Layer {
                     break;
             }
 
-            if (order != 0) {
+            if (order != 0)
+            {
                 _canvas.overrideSorting = true;
                 _canvas.sortingOrder = order;
             }
 
             _canvas.planeDistance = planeDistance;
 
-            if (_rectTransform == null) {
+            if (_rectTransform == null)
+            {
                 _rectTransform = GetComponent<RectTransform>();
             }
 
@@ -63,7 +70,8 @@ namespace HephaestusMobile.UISystem.Layer {
         /// </summary>
         /// <param name="widgetType">Widget name from WidgetsLibrary.</param>
         /// <param name="widget">Widget object.</param>
-        public void RegisterWidget(Enum widgetType, IWidget widget) {
+        public void RegisterWidget(Enum widgetType, IWidget widget)
+        {
             _widgets.Add(Convert.ToInt32(widgetType), widget);
             widget.Transform.SetParent(transform, false);
             widget.OnDismissed += OnWidgetDismissed;
@@ -74,7 +82,8 @@ namespace HephaestusMobile.UISystem.Layer {
         /// </summary>
         /// <param name="widgetType">Widget name from WidgetsLibrary.</param>
         /// <returns>Widget object.</returns>
-        public IWidget GetWidgetByType(Enum widgetType) {
+        public IWidget GetWidgetByType(Enum widgetType)
+        {
             return _widgets[Convert.ToInt32(widgetType)];
         }
 
@@ -82,7 +91,8 @@ namespace HephaestusMobile.UISystem.Layer {
         /// Returns the last Widget.
         /// </summary>
         /// <returns>Widget object.</returns>
-        public IWidget GetLastWidget() {
+        public IWidget GetLastWidget()
+        {
             return _widgets.Values.Last();
         }
 
@@ -90,7 +100,8 @@ namespace HephaestusMobile.UISystem.Layer {
         /// Get widgets count inside current UILayer.
         /// </summary>
         /// <returns></returns>
-        public int GetWidgetsCount() {
+        public int GetWidgetsCount()
+        {
             return _widgets.Count;
         }
 
@@ -98,7 +109,8 @@ namespace HephaestusMobile.UISystem.Layer {
         /// Return the list of all widgets inside current layer.
         /// </summary>
         /// <returns></returns>
-        public List<IWidget> GetAllWidgetsInLayer() {
+        public List<IWidget> GetAllWidgetsInLayer()
+        {
             return _widgets.Values.ToList();
         }
 
@@ -107,7 +119,8 @@ namespace HephaestusMobile.UISystem.Layer {
         /// </summary>
         /// <param name="widgetType">Widget name from WidgetsLibrary.</param>
         /// <returns>Widget object.</returns>
-        public bool IsWidgetTypeAlreadyExists(Enum widgetType) {
+        public bool IsWidgetTypeAlreadyExists(Enum widgetType)
+        {
             return _widgets.ContainsKey(Convert.ToInt32(widgetType));
         }
 
@@ -115,7 +128,8 @@ namespace HephaestusMobile.UISystem.Layer {
 
         #region Private Methods
 
-        private void OnWidgetDismissed(IWidget widget) {
+        private void OnWidgetDismissed(IWidget widget)
+        {
             var widgetType = _widgets.FirstOrDefault(x => x.Value == widget).Key;
             _widgets.Remove(widgetType);
             widget.OnDismissed -= OnWidgetDismissed;

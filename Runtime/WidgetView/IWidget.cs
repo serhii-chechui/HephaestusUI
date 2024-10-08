@@ -1,8 +1,10 @@
 using System;
 using UnityEngine;
 
-namespace HephaestusMobile.UISystem.WidgetView {
-    public interface IWidget {
+namespace HephaestusMobile.UISystem.WidgetView
+{
+    public interface IWidget
+    {
         #region Actions
 
         event Action<IWidget> OnCreated;
