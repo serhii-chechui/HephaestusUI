@@ -1,14 +1,17 @@
 using HephaestusMobile.UISystem.WidgetView;
 using UnityEngine;
 
-namespace HephaestusMobile.UISystem.WidgetController {
-    public abstract class WidgetControllerWithData<TWidget, TData> : MonoBehaviour, IWidgetControllerWithData where TWidget : IWidget where TData : WidgetData.WidgetData {
+namespace HephaestusMobile.UISystem.WidgetController
+{
+    public abstract class WidgetControllerWithData<TWidget, TData> : MonoBehaviour, IWidgetControllerWithData where TWidget : IWidget where TData : WidgetData.WidgetData
+    {
         protected TWidget Widget { get; private set; }
         protected TData WidgetData { get; private set; }
 
-        public void Initialize(object widget, object data) {
-            Widget = (TWidget) widget;
-            WidgetData = (TData) data;
+        public void Initialize(object widget, object data)
+        {
+            Widget = (TWidget)widget;
+            WidgetData = (TData)data;
 
             Widget.OnCreated += OnWidgetCreated;
             Widget.OnActivated += OnWidgetActivated;
@@ -16,7 +19,8 @@ namespace HephaestusMobile.UISystem.WidgetController {
             Widget.OnDismissed += OnWidgetDismissed;
         }
 
-        private void OnDestroy() {
+        private void OnDestroy()
+        {
             if (Widget == null) return;
             Widget.OnCreated -= OnWidgetCreated;
             Widget.OnActivated -= OnWidgetActivated;

@@ -1,6 +1,6 @@
-namespace HephaestusMobile.UISystem.WidgetData {
-    public class WidgetData {
-        
+namespace HephaestusMobile.UISystem.WidgetData
+{
+    public class WidgetData
+    {
     }
 }
-

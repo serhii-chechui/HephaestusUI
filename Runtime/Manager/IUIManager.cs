@@ -1,9 +1,10 @@
 ﻿using System;
 using HephaestusMobile.UISystem.WidgetView;
 
-namespace HephaestusMobile.UISystem.Manager {
-    public interface IUIManager {
-        
+namespace HephaestusMobile.UISystem.Manager
+{
+    public interface IUIManager
+    {
         /// <summary>
         /// Shows the preloader.
         /// </summary>
@@ -27,7 +28,8 @@ namespace HephaestusMobile.UISystem.Manager {
         /// <param name="data">WidgetData object.</param>
         /// <param name="animate">Should be widget animated.</param>
         /// <param name="allowDuplicates">Allows to create multiple widgets of the the same type.</param>
-        IWidget CreateUiWidgetWithData(Enum widgetType, object data = null, bool animate = false, bool allowDuplicates = false);
+        IWidget CreateUiWidgetWithData(Enum widgetType, object data = null, bool animate = false,
+            bool allowDuplicates = false);
 
         /// <summary>
         /// Activates widget by it's type.

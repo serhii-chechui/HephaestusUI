@@ -3,12 +3,12 @@ using Handler;
 using HephaestusMobile.UISystem.Configs;
 using HephaestusMobile.UISystem.WidgetView;
 using UnityEngine;
-using UnityEngine.UI;
 using Zenject;
 
-namespace HephaestusMobile.UISystem.Manager {
-    public class UIManager : IInitializable, IDisposable, IUIManager {
-
+namespace HephaestusMobile.UISystem.Manager
+{
+    public class UIManager : IInitializable, IDisposable, IUIManager
+    {
         #region Private Variables
 
         private GameObject _preloaderPrefab;
@@ -18,7 +18,7 @@ namespace HephaestusMobile.UISystem.Manager {
 
         [Inject]
         private WidgetFactory _widgetFactory;
-        
+
         private UIManagerHandler _uiManagerHandler;
 
         #endregion
@@ -32,34 +32,39 @@ namespace HephaestusMobile.UISystem.Manager {
 
         public void Dispose()
         {
-            
         }
 
         #region Preloader
-        public void ShowPreloader() {
+
+        public void ShowPreloader()
+        {
             //if(_preloaderWidget != null) {
             //    _preloaderWidget.Activate(false);
             //    _preloaderWidget.SetLoadingProgress(0);
             //}
         }
 
-        public void HidePreloader() {
+        public void HidePreloader()
+        {
             //if(_preloaderWidget != null) {
             //    _preloaderWidget.Dismiss(true);
             //}
         }
 
-        public void SetPreloaderProgress(float progress) {
+        public void SetPreloaderProgress(float progress)
+        {
             //if(_preloaderWidget != null) {
             //    _preloaderWidget.SetLoadingProgress(progress);
             //}
         }
+
         #endregion
 
         #region Public Methods
 
         /// <inheritdoc />
-        public IWidget CreateUiWidgetWithData(Enum widgetType, object data = null, bool animate = false, bool allowDuplicates = false)
+        public IWidget CreateUiWidgetWithData(Enum widgetType, object data = null, bool animate = false,
+            bool allowDuplicates = false)
         {
             return _uiManagerHandler.CreateUiWidgetWithData(widgetType, data, animate, allowDuplicates);
         }
@@ -75,7 +80,7 @@ namespace HephaestusMobile.UISystem.Manager {
         {
             _uiManagerHandler.DeactivateWidgetByType(widgetType, animated);
         }
-        
+
         /// <inheritdoc />
         public void DismissWidgetByType(Enum widgetType)
         {
@@ -93,8 +98,7 @@ namespace HephaestusMobile.UISystem.Manager {
         {
             _uiManagerHandler.DismissWidgetsInLayer(layerIndex);
         }
-        
+
         #endregion
     }
-
 }

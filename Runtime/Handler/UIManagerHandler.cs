@@ -19,36 +19,39 @@ namespace Handler
     public class UIManagerHandler : MonoBehaviour
     {
         #region Public Variables
+
         public Camera UiCamera { get; private set; }
-        
+
         #endregion
-        
+
         private UIManagerConfig _uiManagerConfig;
         private WidgetsLibrary _widgetLibrary;
         private WidgetFactory _widgetFactory;
-        
+
         private Canvas _canvas;
         private CanvasScaler _canvasScaler;
         private GraphicRaycaster _graphicRaycaster;
-        
+
         private List<UILayer> _uiLayers;
 
         private EventSystem _eventSystem;
-        
+
         public void Initialize(UIManagerConfig uiManagerConfig, WidgetFactory widgetFactory)
         {
             _uiManagerConfig = uiManagerConfig;
 
             _widgetFactory = widgetFactory;
-            
+
             gameObject.layer = LayerMask.NameToLayer("UI");
-            
-            if(_widgetLibrary == null) {
+
+            if (_widgetLibrary == null)
+            {
                 _widgetLibrary = _uiManagerConfig.widgetsLibrary;
             }
 
             // Add Canvas component
-            if(_canvas == null) {
+            if (_canvas == null)
+            {
                 _canvas = GetComponent<Canvas>();
             }
 
@@ -56,10 +59,11 @@ namespace Handler
             _canvas.planeDistance = _uiManagerConfig.planeDistance;
 
             // Add CanvasScaler
-            if(_canvasScaler == null) {
+            if (_canvasScaler == null)
+            {
                 _canvasScaler = GetComponent<CanvasScaler>();
             }
-            
+
             // Add raycaster
             if (_graphicRaycaster == null)
             {
@@ -68,7 +72,8 @@ namespace Handler
 
             _canvasScaler.uiScaleMode = _uiManagerConfig.canvasScaleMode;
             _canvasScaler.screenMatchMode = _uiManagerConfig.canvasScreenMatchMode;
-            _canvasScaler.referenceResolution = new Vector2(_uiManagerConfig.ReferenceResolution.x, _uiManagerConfig.ReferenceResolution.y);
+            _canvasScaler.referenceResolution = new Vector2(_uiManagerConfig.ReferenceResolution.x,
+                _uiManagerConfig.ReferenceResolution.y);
             _canvasScaler.matchWidthOrHeight = _uiManagerConfig.matchWidthOrHeight;
 
             CreateUILayers(_uiManagerConfig);
@@ -78,22 +83,23 @@ namespace Handler
                 var uiCameraGo = new GameObject("UICamera");
                 uiCameraGo.transform.position = new Vector3(0, 0, -10);
 
-                UiCamera                  = uiCameraGo.AddComponent<Camera>();
-                UiCamera.cullingMask      = 1 << LayerMask.NameToLayer("UI");
-                UiCamera.orthographic     = _uiManagerConfig.orthographic;
+                UiCamera = uiCameraGo.AddComponent<Camera>();
+                UiCamera.cullingMask = 1 << LayerMask.NameToLayer("UI");
+                UiCamera.orthographic = _uiManagerConfig.orthographic;
                 UiCamera.orthographicSize = _uiManagerConfig.orthographicSize;
-                UiCamera.clearFlags       = _uiManagerConfig.cameraClearFlags;
-                UiCamera.backgroundColor  = Color.grey;
-                UiCamera.allowHDR         = false;
-                UiCamera.allowMSAA        = false;
-            
+                UiCamera.clearFlags = _uiManagerConfig.cameraClearFlags;
+                UiCamera.backgroundColor = Color.grey;
+                UiCamera.allowHDR = false;
+                UiCamera.allowMSAA = false;
+
                 #if USE_URP
                 UiCamera.GetUniversalAdditionalCameraData().renderType = _uiManagerConfig.cameraRenderType;
                 #endif
 
                 _canvas.worldCamera = UiCamera;
 
-                if (_uiManagerConfig.createAudioListener) {
+                if (_uiManagerConfig.createAudioListener)
+                {
                     UiCamera.gameObject.AddComponent<AudioListener>();
                 }
             }
@@ -109,19 +115,20 @@ namespace Handler
             }
 
             if (!_uiManagerConfig.sharedInstance) return;
-            
+
             DontDestroyOnLoad(gameObject);
             DontDestroyOnLoad(UiCamera.gameObject);
             DontDestroyOnLoad(_eventSystem.gameObject);
         }
-        
+
         #region Private Methods
 
-        private void CreateUILayers(UIManagerConfig uiManagerConfig) {
-
+        private void CreateUILayers(UIManagerConfig uiManagerConfig)
+        {
             _uiLayers = new List<UILayer>();
 
-            for(var i = 0; i < uiManagerConfig.uiLayersList.Count; i++) {
+            for (var i = 0; i < uiManagerConfig.uiLayersList.Count; i++)
+            {
                 var layerName = $"UI-Layer-{i}-{uiManagerConfig.uiLayersList[i]}";
                 var uiLayer = new GameObject(layerName).AddComponent<UILayer>();
                 uiLayer.transform.SetParent(transform, false);
@@ -129,21 +136,23 @@ namespace Handler
                 _uiLayers.Add(uiLayer);
             }
         }
-        
+
         /// <summary>
         /// Returns UILayers list.
         /// </summary>
         /// <returns>List of UILayers.</returns>
-        private List<UILayer> GetUiLayers() {
+        private List<UILayer> GetUiLayers()
+        {
             return _uiLayers;
         }
-        
+
         /// <summary>
         /// Returns UILayer buy ID.
         /// </summary>
         /// <param name="layerId">UILayer ID.</param>
         /// <returns>UILayer object.</returns>
-        public UILayer GetUiLayerById(int layerId) {
+        public UILayer GetUiLayerById(int layerId)
+        {
             return _uiLayers[layerId];
         }
 
@@ -152,10 +161,11 @@ namespace Handler
         /// </summary>
         /// <param name="layerName">UILayer name.</param>
         /// <returns></returns>
-        public UILayer GetUiLayerByName(string layerName) {
+        public UILayer GetUiLayerByName(string layerName)
+        {
             return _uiLayers.Find(l => l.name == layerName);
         }
-        
+
         #endregion
 
         public IWidget CreateUiWidgetWithData(Enum widgetType, object data, bool animate, bool allowDuplicates)
@@ -164,7 +174,8 @@ namespace Handler
             var layer = _uiLayers[_widgetLibrary.GetLayerByType(widgetType)];
 
             //Check for UI Widgets Duplicates
-            if(layer.IsWidgetTypeAlreadyExists(widgetType) && !allowDuplicates) {
+            if (layer.IsWidgetTypeAlreadyExists(widgetType) && !allowDuplicates)
+            {
                 Debug.LogWarning($"Widget of type {widgetType}, already exists at: {layer.name}");
                 return null;
             }
@@ -193,7 +204,8 @@ namespace Handler
             var layer = _uiLayers[_widgetLibrary.GetLayerByType(widgetType)];
 
             //Check for UI Widgets exists in layer
-            if(!layer.IsWidgetTypeAlreadyExists(widgetType)) {
+            if (!layer.IsWidgetTypeAlreadyExists(widgetType))
+            {
                 return;
             }
 
@@ -206,7 +218,8 @@ namespace Handler
             var layer = _uiLayers[_widgetLibrary.GetLayerByType(widgetType)];
 
             //Check for UI Widgets exists in layer
-            if(!layer.IsWidgetTypeAlreadyExists(widgetType)) {
+            if (!layer.IsWidgetTypeAlreadyExists(widgetType))
+            {
                 return;
             }
 
@@ -219,7 +232,8 @@ namespace Handler
             var layer = _uiLayers[_widgetLibrary.GetLayerByType(widgetType)];
 
             //Check for UI Widgets exists in layer
-            if(!layer.IsWidgetTypeAlreadyExists(widgetType)) {
+            if (!layer.IsWidgetTypeAlreadyExists(widgetType))
+            {
                 return;
             }
 
@@ -227,17 +241,19 @@ namespace Handler
         }
 
         public void DismissAllWidgets()
-        { 
-            foreach (var widget in _uiLayers.SelectMany(layer => layer.GetAllWidgetsInLayer())) {
+        {
+            foreach (var widget in _uiLayers.SelectMany(layer => layer.GetAllWidgetsInLayer()))
+            {
                 widget.Dismiss();
             }
         }
 
         public void DismissWidgetsInLayer(int layerIndex)
-        { 
+        {
             var widgetsCount = _uiLayers[layerIndex].GetWidgetsCount();
-            
-            if(_uiLayers[layerIndex] != null && widgetsCount > 0) {
+
+            if (_uiLayers[layerIndex] != null && widgetsCount > 0)
+            {
                 _uiLayers[layerIndex].GetLastWidget().Dismiss();
             }
         }
