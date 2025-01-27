@@ -86,8 +86,8 @@ namespace WTFGames.Hephaestus.UI.Editor
                     
                 if (_createScene)
                 {
-                    CreatePreviewScene();
                     CreateFolder(FolderScenesName);
+                    CreatePreviewScene();
                 }
 
                 if (_createScripts)
