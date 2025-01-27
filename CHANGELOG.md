@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.1] - 2025-01-27
+
+### Changed
+
+- Added methods for creation folders for the widgets;
+
 ## [1.1.1] - 2023-08-31
 
 ### Changed
