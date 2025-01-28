@@ -2,13 +2,11 @@
     "name": "com.wtfgames.hephaestus.ui.editor",
     "rootNamespace": "WTFGames.Hephaestus.UI.Editor",
     "references": [
-        "GUID:7e72812d87c4146dcbc3e1351ae816ae",
-        "GUID:343deaaf83e0cee4ca978e7df0b80d21",
-        "GUID:2bafac87e7f4b9b418d9448d219b01ab",
-        "GUID:0acc523941302664db1f4e527237feb3",
-        "GUID:27619889b8ba8c24980f49ee34dbb44a",
-        "GUID:09dcc9c0126b6b34ab2a877b8f2277f5",
-        "GUID:75469ad4d38634e559750d17036d5f7c"
+        "com.wtfgames.hephaestus.ui",
+        "UnityEditor.UI",
+        "UnityEngine.UI",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.InputSystem.ForUI"
     ],
     "includePlatforms": [
         "Editor"
@@ -24,13 +22,18 @@
     "versionDefines": [
         {
             "name": "com.unity.render-pipelines.universal",
-            "expression": "12.1.7",
-            "define": "USE_URP"
+            "expression": "17.0.3",
+            "define": "USE_URP_17_0_3"
         },
         {
             "name": "com.unity.inputsystem",
             "expression": "1.11.2",
-            "define": "USE_INPUT_SYSTEM"
+            "define": "USE_INPUT_SYSTEM_1_11_2"
+        },
+        {
+            "name": "com.unity.nuget.newtonsoft-json",
+            "expression": "3.2.1",
+            "define": "USE_NEWTONSOFT_JSON_3_2_1"
         }
     ],
     "noEngineReferences": false

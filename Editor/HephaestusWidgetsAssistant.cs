@@ -4,11 +4,15 @@ using UnityEditor;
 using UnityEngine;
 using System.Text;
 using HephaestusMobile.UISystem.Configs;
+#if USE_NEWTONSOFT_JSON_3_2_1
 using Newtonsoft.Json;
+#endif
 using UnityEditor.SceneManagement;
 using UnityEditor.U2D;
 using UnityEngine.EventSystems;
+#if USE_INPUT_SYSTEM
 using UnityEngine.InputSystem.UI;
+#endif
 using UnityEngine.U2D;
 using UnityEngine.UI;
 
@@ -86,8 +90,8 @@ namespace WTFGames.Hephaestus.UI.Editor
                     
                 if (_createScene)
                 {
-                    CreatePreviewScene();
                     CreateFolder(FolderScenesName);
+                    CreatePreviewScene();
                 }
 
                 if (_createScripts)
@@ -239,6 +243,8 @@ namespace WTFGames.Hephaestus.UI.Editor
             
             #if USE_INPUT_SYSTEM
             eventSystemGo.AddComponent<InputSystemUIInputModule>();
+            #else
+            eventSystemGo.AddComponent<StandaloneInputModule>();
             #endif
 
             // Save the new scene to the specified path
@@ -298,7 +304,11 @@ namespace WTFGames.Hephaestus.UI.Editor
             };
 
             // Convert the JSON content to a string
+            #if USE_NEWTONSOFT_JSON_3_2_1
             var json = JsonConvert.SerializeObject(asmdefContent, Formatting.Indented);
+            #else
+            var json = JsonUtility.ToJson(asmdefContent, true);
+            #endif
 
             // Save the .asmdef file
             File.WriteAllText(asmdefPath, json);
