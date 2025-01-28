@@ -1,7 +1,7 @@
 using HephaestusMobile.UISystem.Configs;
 using UnityEditor;
 using UnityEngine;
-#if USE_URP
+#if USE_URP_17_0_3
 using UnityEngine.Rendering.Universal;
 #endif
 using UnityEngine.UI;
