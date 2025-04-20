@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace HephaestusMobile.UISystem.WidgetView
+namespace WTFGames.Hephaestus.UISystem
 {
     [RequireComponent(typeof(CanvasGroup))]
     public class BaseUIWidget : MonoBehaviour, IWidget
@@ -62,7 +62,10 @@ namespace HephaestusMobile.UISystem.WidgetView
         public virtual void Dismiss()
         {
             NotifyOnDismissed();
-            Destroy(gameObject);
+            if (gameObject != null)
+            {
+                Destroy(gameObject);
+            }
         }
 
         public void NotifyOnCreated()

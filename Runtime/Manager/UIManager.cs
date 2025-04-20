@@ -1,11 +1,8 @@
 using System;
-using Handler;
-using HephaestusMobile.UISystem.Configs;
-using HephaestusMobile.UISystem.WidgetView;
 using UnityEngine;
 using Zenject;
 
-namespace HephaestusMobile.UISystem.Manager
+namespace WTFGames.Hephaestus.UISystem
 {
     public class UIManager : IInitializable, IDisposable, IUIManager
     {
@@ -32,6 +29,7 @@ namespace HephaestusMobile.UISystem.Manager
 
         public void Dispose()
         {
+            _uiManagerHandler.Dismiss();
         }
 
         #region Preloader

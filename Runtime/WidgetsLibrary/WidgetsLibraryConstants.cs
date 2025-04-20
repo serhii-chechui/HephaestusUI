@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace HephaestusMobile.UISystem.WidgetsLibrary
+namespace WTFGames.Hephaestus.UISystem
 {
     [CreateAssetMenu(fileName = "WidgetsLibraryConstants",
         menuName = "HephaestusMobile/Core/UI/WidgetsLibraryConstants", order = 1)]

@@ -5,7 +5,7 @@ using UnityEngine.Rendering.Universal;
 #endif
 using UnityEngine.UI;
 
-namespace HephaestusMobile.UISystem.Configs
+namespace WTFGames.Hephaestus.UISystem
 {
     [CreateAssetMenu(fileName = "UIManagerConfig", menuName = "HephaestusMobile/Core/UI/UIManagerConfig")]
     public class UIManagerConfig : ScriptableObject
@@ -14,7 +14,7 @@ namespace HephaestusMobile.UISystem.Configs
 
         public List<string> uiLayersList = new List<string>();
 
-        public WidgetsLibrary.WidgetsLibrary widgetsLibrary;
+        public WidgetsLibrary widgetsLibrary;
 
         public RenderMode renderMode;
         public CanvasScaler.ScaleMode canvasScaleMode;

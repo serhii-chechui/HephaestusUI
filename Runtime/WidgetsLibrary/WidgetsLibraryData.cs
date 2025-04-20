@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace HephaestusMobile.UISystem.WidgetsLibrary
+namespace WTFGames.Hephaestus.UISystem
 {
     [Serializable]
     public class WidgetsLibraryData

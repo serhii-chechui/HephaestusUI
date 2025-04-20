@@ -1,4 +1,4 @@
-﻿namespace HephaestusMobile.UISystem.WidgetController
+﻿namespace WTFGames.Hephaestus.UISystem
 {
     public interface IWidgetControllerWithData
     {

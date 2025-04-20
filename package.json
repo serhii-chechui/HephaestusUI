@@ -19,6 +19,8 @@
     "com.svermeulen.extenject": "9.2.0-stcf3"
   },
   "publishConfig": {
-    "registry": "http://upm.wtfgames.com.ua/"
+    "registry": "http://18.195.169.73:4873/"
   }
 }
+
+        

@@ -1,6 +1,6 @@
 {
     "name": "com.wtfgames.hephaestus.ui.editor",
-    "rootNamespace": "WTFGames.Hephaestus.UI.Editor",
+    "rootNamespace": "WTFGames.Hephaestus.UISystem.Editor",
     "references": [
         "com.wtfgames.hephaestus.ui",
         "UnityEditor.UI",
