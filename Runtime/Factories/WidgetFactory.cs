@@ -1,7 +1,7 @@
 using UnityEngine;
 using Zenject;
 
-namespace HephaestusMobile.UISystem.WidgetView
+namespace WTFGames.Hephaestus.UISystem
 {
     public class WidgetFactory : PlaceholderFactory<GameObject, IWidget>
     {

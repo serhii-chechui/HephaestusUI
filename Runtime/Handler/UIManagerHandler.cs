@@ -1,19 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HephaestusMobile.UISystem.Configs;
-using HephaestusMobile.UISystem.Layer;
-using HephaestusMobile.UISystem.WidgetController;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using HephaestusMobile.UISystem.WidgetsLibrary;
-using HephaestusMobile.UISystem.WidgetView;
+using UnityEngine.SceneManagement;
 #if USE_URP
 using UnityEngine.Rendering.Universal;
 #endif
 using UnityEngine.UI;
 
-namespace Handler
+namespace WTFGames.Hephaestus.UISystem
 {
     [RequireComponent(typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster))]
     public class UIManagerHandler : MonoBehaviour
@@ -72,8 +68,7 @@ namespace Handler
 
             _canvasScaler.uiScaleMode = _uiManagerConfig.canvasScaleMode;
             _canvasScaler.screenMatchMode = _uiManagerConfig.canvasScreenMatchMode;
-            _canvasScaler.referenceResolution = new Vector2(_uiManagerConfig.ReferenceResolution.x,
-                _uiManagerConfig.ReferenceResolution.y);
+            _canvasScaler.referenceResolution = new Vector2(_uiManagerConfig.ReferenceResolution.x, _uiManagerConfig.ReferenceResolution.y);
             _canvasScaler.matchWidthOrHeight = _uiManagerConfig.matchWidthOrHeight;
 
             CreateUILayers(_uiManagerConfig);
@@ -91,9 +86,12 @@ namespace Handler
                 UiCamera.backgroundColor = Color.grey;
                 UiCamera.allowHDR = false;
                 UiCamera.allowMSAA = false;
+                UiCamera.rect = new Rect(0, 0, 1, 1);
+                UiCamera.targetTexture = null;
+                UiCamera.depth = 1;
 
                 #if USE_URP
-                UiCamera.GetUniversalAdditionalCameraData().renderType = _uiManagerConfig.cameraRenderType;
+                UpdateCameraStack();
                 #endif
 
                 _canvas.worldCamera = UiCamera;
@@ -106,7 +104,7 @@ namespace Handler
 
             if (EventSystem.current == null)
             {
-                var newEventsSystem = new GameObject("EvensSystem", typeof(EventSystem), typeof(StandaloneInputModule));
+                var newEventsSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
                 _eventSystem = newEventsSystem.GetComponent<EventSystem>();
             }
             else
@@ -119,9 +117,55 @@ namespace Handler
             DontDestroyOnLoad(gameObject);
             DontDestroyOnLoad(UiCamera.gameObject);
             DontDestroyOnLoad(_eventSystem.gameObject);
+
+            SceneManager.sceneLoaded += SceneLoadedHandler;
+        }
+
+        public void Dismiss()
+        {
+            SceneManager.sceneLoaded -= SceneLoadedHandler;
         }
 
         #region Private Methods
+
+        private void SceneLoadedHandler(Scene scene, LoadSceneMode loadMode)
+        {
+            UpdateCameraStack();
+        }
+
+        private void UpdateCameraStack()
+        {
+            var uiCameraData = UiCamera.GetUniversalAdditionalCameraData();
+            uiCameraData.renderType = _uiManagerConfig.cameraRenderType;
+            uiCameraData.requiresColorOption = CameraOverrideOption.Off;
+            uiCameraData.requiresDepthOption = CameraOverrideOption.Off;
+                
+            var mainCamera = Camera.main;
+            if (mainCamera == null)
+            {
+                mainCamera = GameObject.FindGameObjectWithTag("MainCamera")?.GetComponent<Camera>();
+            }
+                
+            if (mainCamera != null)
+            {
+                var mainCameraData = mainCamera.GetUniversalAdditionalCameraData();
+                if (!mainCameraData.cameraStack.Contains(UiCamera))
+                {
+                    mainCameraData.renderType = CameraRenderType.Base;
+                    mainCameraData.cameraStack.Add(UiCamera);
+                }
+                else
+                {
+                    Debug.LogWarning("UI Camera already in camera stack.");
+                }
+
+                _canvas.worldCamera = UiCamera;
+            }
+            else
+            {
+                Debug.LogWarning($"Within {SceneManager.GetActiveScene().name} MainCamera not found for stacking UI overlay camera.");
+            }
+        }
 
         private void CreateUILayers(UIManagerConfig uiManagerConfig)
         {
@@ -237,7 +281,15 @@ namespace Handler
                 return;
             }
 
-            layer.GetWidgetByType(widgetType).Dismiss();
+            var widget = layer.GetWidgetByType(widgetType);
+            if (widget == null)
+            {
+                Debug.LogWarning($"Widget of type {widgetType} is null.");
+            }
+            else
+            {
+                widget.Dismiss();
+            }
         }
 
         public void DismissAllWidgets()

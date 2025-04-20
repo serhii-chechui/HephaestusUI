@@ -3,7 +3,6 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 using System.Text;
-using HephaestusMobile.UISystem.Configs;
 #if USE_NEWTONSOFT_JSON_3_2_1
 using Newtonsoft.Json;
 #endif
@@ -16,7 +15,7 @@ using UnityEngine.InputSystem.UI;
 using UnityEngine.U2D;
 using UnityEngine.UI;
 
-namespace WTFGames.Hephaestus.UI.Editor
+namespace WTFGames.Hephaestus.UISystem.Editor
 {
     public class HephaestusWidgetsAssistant : EditorWindow
     {

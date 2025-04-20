@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using HephaestusMobile.UISystem.WidgetView;
 using UnityEngine;
 
-namespace HephaestusMobile.UISystem.WidgetsLibrary
+namespace WTFGames.Hephaestus.UISystem
 {
     [CreateAssetMenu(fileName = "WidgetsLibrary", menuName = "HephaestusMobile/Core/UI/WidgetsLibrary")]
     public class WidgetsLibrary : ScriptableObject

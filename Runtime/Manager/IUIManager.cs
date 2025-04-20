@@ -1,7 +1,6 @@
 ﻿using System;
-using HephaestusMobile.UISystem.WidgetView;
 
-namespace HephaestusMobile.UISystem.Manager
+namespace WTFGames.Hephaestus.UISystem
 {
     public interface IUIManager
     {

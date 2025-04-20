@@ -1,9 +1,7 @@
-using HephaestusMobile.UISystem.Manager;
-using HephaestusMobile.UISystem.WidgetView;
 using UnityEngine;
 using Zenject;
 
-namespace HephaestusMobile.UISystem.Installers
+namespace WTFGames.Hephaestus.UISystem
 {
     public class HephaestusUIManagerInstaller : Installer<HephaestusUIManagerInstaller>
     {

@@ -1,8 +1,7 @@
-using HephaestusMobile.UISystem.Configs;
 using UnityEngine;
 using Zenject;
 
-namespace HephaestusMobile.UISystem.Installers
+namespace WTFGames.Hephaestus.UISystem
 {
     [CreateAssetMenu(fileName = "HephaestusUIManagerSOInstaller",
         menuName = "HephaestusMobile/Core/UI/HephaestusUIManagerSOInstaller")]

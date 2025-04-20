@@ -2,14 +2,14 @@ using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace HephaestusMobile.UISystem.Editor
+namespace WTFGames.Hephaestus.UISystem.Editor
 {
-    [CustomEditor(typeof(WidgetsLibrary.WidgetsLibrary))]
+    [CustomEditor(typeof(WidgetsLibrary))]
     public class WidgetsLibraryEditor : UnityEditor.Editor
     {
         private ReorderableList _reorderableList;
 
-        private WidgetsLibrary.WidgetsLibrary WidgetsLibrary => target as WidgetsLibrary.WidgetsLibrary;
+        private WidgetsLibrary WidgetsLibrary => target as WidgetsLibrary;
 
         private string[] _keys;
 
@@ -99,7 +99,7 @@ namespace HephaestusMobile.UISystem.Editor
 
         public override void OnInspectorGUI()
         {
-            var widgetsLibrary = (WidgetsLibrary.WidgetsLibrary) target;
+            var widgetsLibrary = (WidgetsLibrary) target;
 
             if (widgetsLibrary.widgetsLibraryConstants != null)
             {

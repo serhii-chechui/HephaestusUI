@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Handler;
-using HephaestusMobile.UISystem.WidgetView;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace HephaestusMobile.UISystem.Layer
+namespace WTFGames.Hephaestus.UISystem
 {
     [RequireComponent(typeof(Canvas), typeof(GraphicRaycaster))]
     public class UILayer : MonoBehaviour

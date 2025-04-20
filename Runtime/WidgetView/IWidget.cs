@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace HephaestusMobile.UISystem.WidgetView
+namespace WTFGames.Hephaestus.UISystem
 {
     public interface IWidget
     {
