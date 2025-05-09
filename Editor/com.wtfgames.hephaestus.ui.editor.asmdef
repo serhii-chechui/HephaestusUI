@@ -30,11 +30,6 @@
             "name": "com.unity.inputsystem",
             "expression": "1.11.2",
             "define": "USE_INPUT_SYSTEM"
-        },
-        {
-            "name": "com.unity.nuget.newtonsoft-json",
-            "expression": "3.2.1",
-            "define": "USE_NEWTONSOFT_JSON"
         }
     ],
     "noEngineReferences": false

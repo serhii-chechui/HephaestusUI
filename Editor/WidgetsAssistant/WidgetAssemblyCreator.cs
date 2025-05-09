@@ -46,11 +46,7 @@ namespace WTFGames.Hephaestus.UISystem.Editor
             }
 
             // Convert the JSON content to a string
-            #if USE_NEWTONSOFT_JSON
-            var json = JsonConvert.SerializeObject(newAssemblyDefinitionData, Formatting.Indented);
-            #else
             var json = JsonUtility.ToJson(newAssemblyDefinitionData, true);
-            #endif
 
             // Save the .asmdef file
             File.WriteAllText(asmdefPath, json);
