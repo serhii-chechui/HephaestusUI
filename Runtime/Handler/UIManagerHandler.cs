@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
+#if USE_INPUT_SYSTEM
+using UnityEngine.InputSystem.UI;
+#endif
 using UnityEngine.SceneManagement;
 #if USE_URP
 using UnityEngine.Rendering.Universal;
@@ -104,7 +107,12 @@ namespace WTFGames.Hephaestus.UISystem
 
             if (EventSystem.current == null)
             {
-                var newEventsSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
+                var newEventsSystem = new GameObject("EventSystem", typeof(EventSystem));
+                #if USE_INPUT_SYSTEM
+                newEventsSystem.AddComponent<InputSystemUIInputModule>();
+                #else
+                newEventsSystem.AddComponent<StandaloneInputModule>();
+                #endif
                 _eventSystem = newEventsSystem.GetComponent<EventSystem>();
             }
             else

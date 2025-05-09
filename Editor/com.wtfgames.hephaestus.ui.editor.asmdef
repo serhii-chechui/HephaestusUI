@@ -6,7 +6,8 @@
         "UnityEditor.UI",
         "UnityEngine.UI",
         "Unity.RenderPipelines.Universal.Runtime",
-        "Unity.InputSystem.ForUI"
+        "Unity.InputSystem.ForUI",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [
         "Editor"
@@ -28,12 +29,12 @@
         {
             "name": "com.unity.inputsystem",
             "expression": "1.11.2",
-            "define": "USE_INPUT_SYSTEM_1_11_2"
+            "define": "USE_INPUT_SYSTEM"
         },
         {
             "name": "com.unity.nuget.newtonsoft-json",
             "expression": "3.2.1",
-            "define": "USE_NEWTONSOFT_JSON_3_2_1"
+            "define": "USE_NEWTONSOFT_JSON"
         }
     ],
     "noEngineReferences": false
