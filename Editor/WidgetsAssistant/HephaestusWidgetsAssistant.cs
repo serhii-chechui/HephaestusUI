@@ -1,9 +1,10 @@
 using System;
 using System.IO;
+using System.Reflection.Emit;
 using UnityEditor;
 using UnityEngine;
 using System.Text;
-#if USE_NEWTONSOFT_JSON_3_2_1
+#if USE_NEWTONSOFT_JSON
 using Newtonsoft.Json;
 #endif
 using UnityEditor.SceneManagement;
@@ -27,13 +28,11 @@ namespace WTFGames.Hephaestus.UISystem.Editor
 
         private string _uiRootFolder;
         private string _widgetRootFolder;
-        
-        private const string FolderAtlasName = "Atlas";
-        private const string FolderPrefabsName = "Prefabs";
-        private const string FolderPreviewName = "Preview";
-        private const string FolderScenesName = "Scenes";
-        private const string FolderScriptsName = "Scripts";
-        private const string FolderSpritesName = "Sprites";
+
+        private WidgetAssemblyCreator _widgetAssemblyCreator;
+        private WidgetModelCreator _widgetModelCreator;
+        private WidgetViewCreator _widgetViewCreator;
+        private WidgetControllerCreator _widgetControllerCreator;
         
         [MenuItem("Hephaestus/Utilities/ViewsCreatorAssistant")]
         private static void ShowWindow()
@@ -41,6 +40,14 @@ namespace WTFGames.Hephaestus.UISystem.Editor
             var window = GetWindow<HephaestusWidgetsAssistant>();
             window.titleContent = new GUIContent("Widgets Creator Assistant");
             window.Show();
+        }
+
+        private void OnEnable()
+        {
+            _widgetAssemblyCreator = new WidgetAssemblyCreator();
+            _widgetModelCreator = new WidgetModelCreator();
+            _widgetViewCreator = new WidgetViewCreator();
+            _widgetControllerCreator = new WidgetControllerCreator();
         }
 
         private void OnGUI()
@@ -80,22 +87,22 @@ namespace WTFGames.Hephaestus.UISystem.Editor
                     
                 if (_createAtlas)
                 {
-                    CreateFolder(FolderAtlasName);
+                    CreateFolder(WidgetsAssistantConstants.FolderAtlasName);
                     CreateAtlas();
                 }
                     
-                CreateFolder(FolderPrefabsName);
-                CreateFolder(FolderPreviewName);
+                CreateFolder(WidgetsAssistantConstants.FolderPrefabsName);
+                CreateFolder(WidgetsAssistantConstants.FolderPreviewName);
                     
                 if (_createScene)
                 {
-                    CreateFolder(FolderScenesName);
+                    CreateFolder(WidgetsAssistantConstants.FolderScenesName);
                     CreatePreviewScene();
                 }
 
                 if (_createScripts)
                 {
-                    CreateFolder(FolderScriptsName);
+                    CreateFolder(WidgetsAssistantConstants.FolderScriptsName);
 
                     CreateAsmdef();
                     CreateModel();
@@ -103,7 +110,7 @@ namespace WTFGames.Hephaestus.UISystem.Editor
                     CreateController();
                 }
                     
-                CreateFolder(FolderSpritesName);
+                CreateFolder(WidgetsAssistantConstants.FolderSpritesName);
             }
         }
         
@@ -261,175 +268,25 @@ namespace WTFGames.Hephaestus.UISystem.Editor
 
         private void CreateAsmdef()
         {
-            // Specify the folder path where the .asmdef file will be saved
-            var folderPath = Path.Combine("Assets", Application.productName, "UI", _widgetSetName, FolderScriptsName);
-
-            // Ensure the folder exists
-            if (!AssetDatabase.IsValidFolder(folderPath))
-            {
-                Debug.LogError($"The folder path '{folderPath}' does not exist. Please create the folder first.");
-                return;
-            }
-
-            // Define the .asmdef file name
-            var asmdefFileName = $"com.{Application.companyName}.{Application.productName}.ui.{_widgetSetName}".ToLower(); 
-            var asmdefName = $"\"name\": \"{asmdefFileName}\"".ToLower();
-            var asmdefPath = $"{folderPath}/{asmdefFileName}.asmdef";
-
-            // Check if a .asmdef file with the same name already exists
-            if (File.Exists(asmdefPath))
-            {
-                Debug.LogError($"A .asmdef file with the name '{asmdefFileName}' already exists at {asmdefPath}. Please choose a different name.");
-                return;
-            }
-            
-            var rootNamespace = $"{Application.companyName}.{Application.productName}.UI.{_widgetSetName}";
-
-            // Create the .asmdef JSON content
-            var asmdefContent = new
-            {
-                name = asmdefFileName,
-                rootNamespace = rootNamespace,
-                references = new[] { "Zenject", "Unity.TextMeshPro", "UnityEngine.UI", "com.wtfgames.hephaestus.ui" }, // Add references to other assemblies (e.g., Zenject)
-                includePlatforms = Array.Empty<string>(), // Leave empty to include all platforms
-                excludePlatforms = Array.Empty<string>(), // Leave empty to exclude no platforms
-                allowUnsafeCode = false,
-                overrideReferences = false,
-                precompiledReferences = Array.Empty<string>(),
-                autoReferenced = true,
-                defineConstraints = Array.Empty<string>(),
-                versionDefines = Array.Empty<object>(),
-                noEngineReferences = false
-            };
-
-            // Convert the JSON content to a string
-            #if USE_NEWTONSOFT_JSON_3_2_1
-            var json = JsonConvert.SerializeObject(asmdefContent, Formatting.Indented);
-            #else
-            var json = JsonUtility.ToJson(asmdefContent, true);
-            #endif
-
-            // Save the .asmdef file
-            File.WriteAllText(asmdefPath, json);
+            _widgetAssemblyCreator.CreateAssembly(_widgetSetName);
             AssetDatabase.Refresh();
-
-            Debug.Log($".asmdef file created at: {asmdefPath}");
         }
 
         private void CreateModel()
         {
-            var stringBuilder = new StringBuilder();
-            
-            // Using block
-            stringBuilder.Append("using HephaestusMobile.UISystem.WidgetData;\n\n");
-            
-            // Namespace begins
-            stringBuilder.Append($"namespace {Application.productName}.UI.{_widgetSetName}\n");
-            stringBuilder.Append("{\n");
-            
-            // Class begins
-            stringBuilder.Append($"\tpublic class {_widgetSetName}WidgetModel : WidgetData\n");
-            stringBuilder.Append("\t{\n");
-            
-            // Class inner content
-            stringBuilder.Append("\t\n");
-            
-            // Class ends
-            stringBuilder.Append("\t}\n");
-            
-            // Namespace ends
-            stringBuilder.Append("}");
-
-            var scriptsFolderPath = Path.Combine("Assets", Application.productName, "UI", _widgetSetName, FolderScriptsName);
-
-            if (!AssetDatabase.IsValidFolder(scriptsFolderPath))
-            {
-                AssetDatabase.CreateFolder(scriptsFolderPath, _widgetSetName);
-                AssetDatabase.Refresh();
-            }
-
-            File.WriteAllText(Path.Combine(scriptsFolderPath, $"{_widgetSetName}WindowModel.cs"), stringBuilder.ToString());
-            
+            _widgetModelCreator.CreateWidgetModel(_widgetSetName);
             AssetDatabase.Refresh();
         }
         
         private void CreateView()
         {
-            var stringBuilder = new StringBuilder();
-            
-            // Using block
-            stringBuilder.Append("using HephaestusMobile.UISystem.WidgetView;\n");
-            stringBuilder.Append("using UnityEngine.UI;\n");
-            stringBuilder.Append("using UnityEngine;\n\n");
-            
-            // Namespace begins
-            stringBuilder.Append($"namespace {Application.productName}.UI.{_widgetSetName}\n");
-            stringBuilder.Append("{\n");
-            
-            // Class begins
-            stringBuilder.Append($"\tpublic class {_widgetSetName}Widget : BaseUIWidget\n");
-            stringBuilder.Append("\t{\n");
-            
-            // Class inner content
-            stringBuilder.Append("\t\tpublic void Initialize()\n");
-            stringBuilder.Append("\t\t{\n\n");
-            stringBuilder.Append("\t\t}\n");
-            
-            // Class ends
-            stringBuilder.Append("\t}\n");
-            
-            // Namespace ends
-            stringBuilder.Append("}");
-
-            var scriptsFolderPath = Path.Combine("Assets", Application.productName, "UI", _widgetSetName, FolderScriptsName);
-            File.WriteAllText(Path.Combine(scriptsFolderPath, $"{_widgetSetName}Widget.cs"), stringBuilder.ToString());
-            
+            _widgetViewCreator.CreateView(_widgetSetName);
             AssetDatabase.Refresh();
         }
         
         private void CreateController()
         {
-            var stringBuilder = new StringBuilder();
-            
-            // Using block
-            stringBuilder.Append("using HephaestusMobile.UISystem.WidgetController;\n");
-            stringBuilder.Append("using HephaestusMobile.UISystem.WidgetView;\n");
-            stringBuilder.Append("using Zenject;\n\n");
-            
-            // Namespace begins
-            stringBuilder.Append($"namespace {Application.productName}.UI.{_widgetSetName}\n");
-            stringBuilder.Append("{\n");
-            
-            // Class begins
-            stringBuilder.Append($"\tpublic class {_widgetSetName}WidgetController : WidgetControllerWithData<{_widgetSetName}Widget, {_widgetSetName}WidgetModel>\n");
-            stringBuilder.Append("\t{\n");
-            
-            // Class inner content
-            stringBuilder.Append($"\t\tprotected override void OnWidgetCreated(IWidget widget)\n");
-            stringBuilder.Append("\t\t{\n");
-            stringBuilder.Append("\t\t}\n\n");
-            
-            stringBuilder.Append($"\t\tprotected override void OnWidgetActivated(IWidget widget)\n");
-            stringBuilder.Append("\t\t{\n");
-            stringBuilder.Append("\t\t}\n\n");
-            
-            stringBuilder.Append($"\t\tprotected override void OnWidgetDeactivated(IWidget widget)\n");
-            stringBuilder.Append("\t\t{\n");
-            stringBuilder.Append("\t\t}\n\n");
-            
-            stringBuilder.Append($"\t\tprotected override void OnWidgetDismissed(IWidget widget)\n");
-            stringBuilder.Append("\t\t{\n");
-            stringBuilder.Append("\t\t}\n\n");
-
-            // Class ends
-            stringBuilder.Append("\t}\n");
-            
-            // Namespace ends
-            stringBuilder.Append("}");
-
-            var scriptsFolderPath = Path.Combine("Assets", Application.productName, "UI", _widgetSetName, FolderScriptsName);
-            File.WriteAllText(Path.Combine(scriptsFolderPath, $"{_widgetSetName}WidgetController.cs"), stringBuilder.ToString());
-            
+            _widgetControllerCreator.CreateWidgetController(_widgetSetName);
             AssetDatabase.Refresh();
         }
     }
