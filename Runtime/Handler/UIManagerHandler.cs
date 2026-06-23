@@ -123,8 +123,16 @@ namespace WTFGames.Hephaestus.UISystem
             if (!_uiManagerConfig.sharedInstance) return;
 
             DontDestroyOnLoad(gameObject);
-            DontDestroyOnLoad(UiCamera.gameObject);
-            DontDestroyOnLoad(_eventSystem.gameObject);
+
+            if (UiCamera != null)
+            {
+                DontDestroyOnLoad(UiCamera.gameObject);
+            }
+
+            if (_eventSystem != null)
+            {
+                DontDestroyOnLoad(_eventSystem.gameObject);
+            }
 
             SceneManager.sceneLoaded += SceneLoadedHandler;
         }
@@ -143,6 +151,7 @@ namespace WTFGames.Hephaestus.UISystem
 
         private void UpdateCameraStack()
         {
+            #if USE_URP
             var uiCameraData = UiCamera.GetUniversalAdditionalCameraData();
             uiCameraData.renderType = _uiManagerConfig.cameraRenderType;
             uiCameraData.requiresColorOption = CameraOverrideOption.Off;
@@ -173,6 +182,7 @@ namespace WTFGames.Hephaestus.UISystem
             {
                 Debug.LogWarning($"Within {SceneManager.GetActiveScene().name} MainCamera not found for stacking UI overlay camera.");
             }
+            #endif
         }
 
         private void CreateUILayers(UIManagerConfig uiManagerConfig)
@@ -310,11 +320,22 @@ namespace WTFGames.Hephaestus.UISystem
 
         public void DismissWidgetsInLayer(int layerIndex)
         {
-            var widgetsCount = _uiLayers[layerIndex].GetWidgetsCount();
-
-            if (_uiLayers[layerIndex] != null && widgetsCount > 0)
+            if (layerIndex < 0 || layerIndex >= _uiLayers.Count)
             {
-                _uiLayers[layerIndex].GetLastWidget().Dismiss();
+                Debug.LogWarning($"DismissWidgetsInLayer: layer index {layerIndex} is out of range.");
+                return;
+            }
+
+            var layer = _uiLayers[layerIndex];
+            if (layer == null)
+            {
+                return;
+            }
+
+            // GetAllWidgetsInLayer returns a snapshot, so dismissing (which mutates the layer) is safe here.
+            foreach (var widget in layer.GetAllWidgetsInLayer())
+            {
+                widget.Dismiss();
             }
         }
     }

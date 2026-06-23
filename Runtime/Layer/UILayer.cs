@@ -11,7 +11,7 @@ namespace WTFGames.Hephaestus.UISystem
     {
         #region Private Variables
 
-        private readonly Dictionary<int, IWidget> _widgets = new Dictionary<int, IWidget>();
+        private readonly Dictionary<int, List<IWidget>> _widgets = new Dictionary<int, List<IWidget>>();
         private RectTransform _rectTransform;
         private Canvas _canvas;
 
@@ -70,28 +70,46 @@ namespace WTFGames.Hephaestus.UISystem
         /// <param name="widget">Widget object.</param>
         public void RegisterWidget(Enum widgetType, IWidget widget)
         {
-            _widgets.Add(Convert.ToInt32(widgetType), widget);
+            var key = Convert.ToInt32(widgetType);
+            if (!_widgets.TryGetValue(key, out var widgetsOfType))
+            {
+                widgetsOfType = new List<IWidget>();
+                _widgets.Add(key, widgetsOfType);
+            }
+
+            widgetsOfType.Add(widget);
             widget.Transform.SetParent(transform, false);
             widget.OnDismissed += OnWidgetDismissed;
         }
 
         /// <summary>
-        /// Returns Widget by it's name from WidgetsLibrary.
+        /// Returns the most recently registered Widget of the given type, or null if none exist.
         /// </summary>
         /// <param name="widgetType">Widget name from WidgetsLibrary.</param>
         /// <returns>Widget object.</returns>
         public IWidget GetWidgetByType(Enum widgetType)
         {
-            return _widgets[Convert.ToInt32(widgetType)];
+            return _widgets.TryGetValue(Convert.ToInt32(widgetType), out var widgetsOfType) && widgetsOfType.Count > 0
+                ? widgetsOfType[widgetsOfType.Count - 1]
+                : null;
         }
 
         /// <summary>
-        /// Returns the last Widget.
+        /// Returns the last registered Widget in the layer.
         /// </summary>
         /// <returns>Widget object.</returns>
         public IWidget GetLastWidget()
         {
-            return _widgets.Values.Last();
+            IWidget last = null;
+            foreach (var widgetsOfType in _widgets.Values)
+            {
+                if (widgetsOfType.Count > 0)
+                {
+                    last = widgetsOfType[widgetsOfType.Count - 1];
+                }
+            }
+
+            return last;
         }
 
         /// <summary>
@@ -100,7 +118,7 @@ namespace WTFGames.Hephaestus.UISystem
         /// <returns></returns>
         public int GetWidgetsCount()
         {
-            return _widgets.Count;
+            return _widgets.Values.Sum(widgetsOfType => widgetsOfType.Count);
         }
 
         /// <summary>
@@ -109,7 +127,7 @@ namespace WTFGames.Hephaestus.UISystem
         /// <returns></returns>
         public List<IWidget> GetAllWidgetsInLayer()
         {
-            return _widgets.Values.ToList();
+            return _widgets.Values.SelectMany(widgetsOfType => widgetsOfType).ToList();
         }
 
         /// <summary>
@@ -119,7 +137,7 @@ namespace WTFGames.Hephaestus.UISystem
         /// <returns>Widget object.</returns>
         public bool IsWidgetTypeAlreadyExists(Enum widgetType)
         {
-            return _widgets.ContainsKey(Convert.ToInt32(widgetType));
+            return _widgets.TryGetValue(Convert.ToInt32(widgetType), out var widgetsOfType) && widgetsOfType.Count > 0;
         }
 
         #endregion
@@ -128,9 +146,26 @@ namespace WTFGames.Hephaestus.UISystem
 
         private void OnWidgetDismissed(IWidget widget)
         {
-            var widgetType = _widgets.FirstOrDefault(x => x.Value == widget).Key;
-            _widgets.Remove(widgetType);
             widget.OnDismissed -= OnWidgetDismissed;
+
+            int? emptyKey = null;
+            foreach (var pair in _widgets)
+            {
+                if (pair.Value.Remove(widget))
+                {
+                    if (pair.Value.Count == 0)
+                    {
+                        emptyKey = pair.Key;
+                    }
+
+                    break;
+                }
+            }
+
+            if (emptyKey.HasValue)
+            {
+                _widgets.Remove(emptyKey.Value);
+            }
         }
 
         #endregion

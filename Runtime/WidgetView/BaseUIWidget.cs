@@ -10,6 +10,8 @@ namespace WTFGames.Hephaestus.UISystem
         [SerializeField]
         protected CanvasGroup canvasGroup;
 
+        private Coroutine _fadeRoutine;
+
         public event Action<IWidget> OnCreated;
         public event Action<IWidget> OnActivated;
         public event Action<IWidget> OnDeactivated;
@@ -28,6 +30,8 @@ namespace WTFGames.Hephaestus.UISystem
 
             canvasGroup = GetComponent<CanvasGroup>();
 
+            StopFade();
+
             if (!animated)
             {
                 gameObject.SetActive(true);
@@ -37,7 +41,9 @@ namespace WTFGames.Hephaestus.UISystem
             }
             else
             {
-                StartCoroutine(FadeIn_co());
+                // The GameObject must be active for the coroutine to run.
+                gameObject.SetActive(true);
+                _fadeRoutine = StartCoroutine(FadeIn_co());
             }
         }
 
@@ -47,6 +53,8 @@ namespace WTFGames.Hephaestus.UISystem
 
             canvasGroup = GetComponent<CanvasGroup>();
 
+            StopFade();
+
             if (!animated)
             {
                 canvasGroup.alpha = 0f;
@@ -55,7 +63,7 @@ namespace WTFGames.Hephaestus.UISystem
             }
             else
             {
-                StartCoroutine(FadeOut_co());
+                _fadeRoutine = StartCoroutine(FadeOut_co());
             }
         }
 
@@ -88,6 +96,15 @@ namespace WTFGames.Hephaestus.UISystem
             OnDismissed?.Invoke(this);
         }
 
+        private void StopFade()
+        {
+            if (_fadeRoutine != null)
+            {
+                StopCoroutine(_fadeRoutine);
+                _fadeRoutine = null;
+            }
+        }
+
         private IEnumerator FadeIn_co()
         {
             while (canvasGroup.alpha < 1f)
@@ -98,6 +115,7 @@ namespace WTFGames.Hephaestus.UISystem
 
             canvasGroup.interactable = true;
             canvasGroup.blocksRaycasts = true;
+            _fadeRoutine = null;
         }
 
         private IEnumerator FadeOut_co()
@@ -110,6 +128,7 @@ namespace WTFGames.Hephaestus.UISystem
 
             canvasGroup.interactable = false;
             canvasGroup.blocksRaycasts = false;
+            _fadeRoutine = null;
         }
     }
 }
