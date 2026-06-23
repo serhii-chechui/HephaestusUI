@@ -10,6 +10,10 @@ namespace WTFGames.Hephaestus.UISystem
         [SerializeField]
         protected CanvasGroup canvasGroup;
 
+        [SerializeField]
+        [Tooltip("Duration of the fade in/out animation, in seconds.")]
+        protected float fadeDuration = 1f;
+
         private Coroutine _fadeRoutine;
 
         public event Action<IWidget> OnCreated;
@@ -19,6 +23,14 @@ namespace WTFGames.Hephaestus.UISystem
 
         public Transform Transform => transform;
 
+        protected virtual void Awake()
+        {
+            if (canvasGroup == null)
+            {
+                canvasGroup = GetComponent<CanvasGroup>();
+            }
+        }
+
         public void Create()
         {
             NotifyOnCreated();
@@ -27,8 +39,6 @@ namespace WTFGames.Hephaestus.UISystem
         public virtual void Activate(bool animated)
         {
             NotifyOnActivated();
-
-            canvasGroup = GetComponent<CanvasGroup>();
 
             StopFade();
 
@@ -50,8 +60,6 @@ namespace WTFGames.Hephaestus.UISystem
         public virtual void Deactivate(bool animated)
         {
             NotifyOnDeactivated();
-
-            canvasGroup = GetComponent<CanvasGroup>();
 
             StopFade();
 
@@ -107,12 +115,15 @@ namespace WTFGames.Hephaestus.UISystem
 
         private IEnumerator FadeIn_co()
         {
+            var speed = fadeDuration > 0f ? 1f / fadeDuration : float.PositiveInfinity;
+
             while (canvasGroup.alpha < 1f)
             {
-                canvasGroup.alpha += Time.deltaTime;
+                canvasGroup.alpha += Time.deltaTime * speed;
                 yield return null;
             }
 
+            canvasGroup.alpha = 1f;
             canvasGroup.interactable = true;
             canvasGroup.blocksRaycasts = true;
             _fadeRoutine = null;
@@ -120,12 +131,15 @@ namespace WTFGames.Hephaestus.UISystem
 
         private IEnumerator FadeOut_co()
         {
+            var speed = fadeDuration > 0f ? 1f / fadeDuration : float.PositiveInfinity;
+
             while (canvasGroup.alpha > 0f)
             {
-                canvasGroup.alpha -= Time.deltaTime;
+                canvasGroup.alpha -= Time.deltaTime * speed;
                 yield return null;
             }
 
+            canvasGroup.alpha = 0f;
             canvasGroup.interactable = false;
             canvasGroup.blocksRaycasts = false;
             _fadeRoutine = null;

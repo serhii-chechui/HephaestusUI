@@ -22,32 +22,6 @@ namespace WTFGames.Hephaestus.UISystem
             _uiManagerHandler.Dismiss();
         }
 
-        #region Preloader
-
-        public void ShowPreloader()
-        {
-            //if(_preloaderWidget != null) {
-            //    _preloaderWidget.Activate(false);
-            //    _preloaderWidget.SetLoadingProgress(0);
-            //}
-        }
-
-        public void HidePreloader()
-        {
-            //if(_preloaderWidget != null) {
-            //    _preloaderWidget.Dismiss(true);
-            //}
-        }
-
-        public void SetPreloaderProgress(float progress)
-        {
-            //if(_preloaderWidget != null) {
-            //    _preloaderWidget.SetLoadingProgress(progress);
-            //}
-        }
-
-        #endregion
-
         #region Public Methods
 
         /// <inheritdoc />

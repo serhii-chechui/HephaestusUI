@@ -5,22 +5,6 @@ namespace WTFGames.Hephaestus.UISystem
     public interface IUIManager
     {
         /// <summary>
-        /// Shows the preloader.
-        /// </summary>
-        void ShowPreloader();
-
-        /// <summary>
-        /// Hides the preloader.
-        /// </summary>
-        void HidePreloader();
-
-        /// <summary>
-        /// Set preloader progress.
-        /// </summary>
-        /// <param name="progress">Preloader progress value.</param>
-        void SetPreloaderProgress(float progress);
-
-        /// <summary>
         /// Shows UIWidget with WidgetData.
         /// </summary>
         /// <param name="widgetType">Widget name from WidgetsLibrary.</param>
