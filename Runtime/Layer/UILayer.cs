@@ -22,9 +22,11 @@ namespace WTFGames.Hephaestus.UISystem
         public void Init(UIManagerHandler uiManagerHandler, int order = 0, float planeDistance = 1f,
             RenderMode renderMode = RenderMode.ScreenSpaceOverlay)
         {
-            Debug.Log("UILayer.Init");
-
-            gameObject.layer = LayerMask.NameToLayer("UI");
+            var uiLayer = LayerMask.NameToLayer("UI");
+            if (uiLayer != -1)
+            {
+                gameObject.layer = uiLayer;
+            }
 
             if (_canvas == null)
             {

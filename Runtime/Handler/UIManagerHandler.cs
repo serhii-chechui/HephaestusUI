@@ -43,7 +43,16 @@ namespace WTFGames.Hephaestus.UISystem
 
         public void Initialize()
         {
-            gameObject.layer = LayerMask.NameToLayer("UI");
+            var uiLayer = LayerMask.NameToLayer("UI");
+            if (uiLayer == -1)
+            {
+                Debug.LogError("UIManagerHandler: a 'UI' layer is not defined in Project Settings > Tags and Layers. " +
+                               "UI culling and rendering may behave incorrectly.");
+            }
+            else
+            {
+                gameObject.layer = uiLayer;
+            }
 
             if (_widgetLibrary == null)
             {
@@ -84,7 +93,10 @@ namespace WTFGames.Hephaestus.UISystem
                 uiCameraGo.transform.position = new Vector3(0, 0, -10);
 
                 UiCamera = uiCameraGo.AddComponent<Camera>();
-                UiCamera.cullingMask = 1 << LayerMask.NameToLayer("UI");
+                if (uiLayer != -1)
+                {
+                    UiCamera.cullingMask = 1 << uiLayer;
+                }
                 UiCamera.orthographic = _uiManagerConfig.orthographic;
                 UiCamera.orthographicSize = _uiManagerConfig.orthographicSize;
                 UiCamera.clearFlags = _uiManagerConfig.cameraClearFlags;
@@ -254,7 +266,14 @@ namespace WTFGames.Hephaestus.UISystem
         public IWidget CreateUiWidgetWithData(Enum widgetType, object data, bool animate, bool allowDuplicates)
         {
             //Find related UILayer
-            var layer = _uiLayers[_widgetLibrary.GetLayerByType(widgetType)];
+            var layerIndex = _widgetLibrary.GetLayerByType(widgetType);
+            if (layerIndex < 0 || layerIndex >= _uiLayers.Count)
+            {
+                Debug.LogError($"Cannot create widget {widgetType}: layer index {layerIndex} is invalid.");
+                return null;
+            }
+
+            var layer = _uiLayers[layerIndex];
 
             //Check for UI Widgets Duplicates
             if (layer.IsWidgetTypeAlreadyExists(widgetType) && !allowDuplicates)
@@ -264,16 +283,27 @@ namespace WTFGames.Hephaestus.UISystem
             }
 
             //Instantiate new Widget Prefab
-            // var widgetPrefab = Instantiate(_widgetLibrary.GetPrefabByType(widgetType));
-            // widgetPrefab.name = $"{widgetType.ToLowerInvariant()}-{widgetGuid}";
+            var prefab = _widgetLibrary.GetPrefabByType(widgetType);
+            if (prefab == null)
+            {
+                // GetPrefabByType already logged the reason.
+                return null;
+            }
 
-            var widget = _widgetFactory.Create(_widgetLibrary.GetPrefabByType(widgetType));
+            var widget = _widgetFactory.Create(prefab);
 
             //Register it in UILayer
             layer.RegisterWidget(widgetType, widget);
 
             var controller = widget.Transform.GetComponent<IWidgetControllerWithData>();
-            controller.Initialize(widget, data);
+            if (controller == null)
+            {
+                Debug.LogError($"Widget {widgetType} prefab is missing an IWidgetControllerWithData component.");
+            }
+            else
+            {
+                controller.Initialize(widget, data);
+            }
 
             widget.Create();
             widget.Activate(animate);
