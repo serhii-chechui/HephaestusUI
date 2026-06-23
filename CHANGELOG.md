@@ -1,3 +1,10 @@
+## <small>2.3.1 (2026-06-23)</small>
+
+* test(ui): add EditMode tests for UILayer and WidgetsLibrary ([f71b293](https://github.com/serhii-chechui/HephaestusUI/commit/f71b293))
+* fix(tests): make TestWidget a plain class so it works in the Editor-only test assembly ([fa2615a](https://github.com/serhii-chechui/HephaestusUI/commit/fa2615a))
+
+
+
 ## <small>2.3.0 (2026-06-23)</small>
 
 * fix(ui): support allowDuplicates by storing widgets per type in lists ([26e2404](https://github.com/serhii-chechui/HephaestusUI/commit/26e2404))
