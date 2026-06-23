@@ -11,6 +11,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Rendering.Universal;
 #endif
 using UnityEngine.UI;
+using Zenject;
 
 namespace WTFGames.Hephaestus.UISystem
 {
@@ -23,9 +24,13 @@ namespace WTFGames.Hephaestus.UISystem
 
         #endregion
 
+        [Inject]
         private UIManagerConfig _uiManagerConfig;
-        private WidgetsLibrary _widgetLibrary;
+
+        [Inject]
         private WidgetFactory _widgetFactory;
+
+        private WidgetsLibrary _widgetLibrary;
 
         private Canvas _canvas;
         private CanvasScaler _canvasScaler;
@@ -34,13 +39,10 @@ namespace WTFGames.Hephaestus.UISystem
         private List<UILayer> _uiLayers;
 
         private EventSystem _eventSystem;
+        private bool _ownsEventSystem;
 
-        public void Initialize(UIManagerConfig uiManagerConfig, WidgetFactory widgetFactory)
+        public void Initialize()
         {
-            _uiManagerConfig = uiManagerConfig;
-
-            _widgetFactory = widgetFactory;
-
             gameObject.layer = LayerMask.NameToLayer("UI");
 
             if (_widgetLibrary == null)
@@ -114,6 +116,7 @@ namespace WTFGames.Hephaestus.UISystem
                 newEventsSystem.AddComponent<StandaloneInputModule>();
                 #endif
                 _eventSystem = newEventsSystem.GetComponent<EventSystem>();
+                _ownsEventSystem = true;
             }
             else
             {
@@ -140,6 +143,24 @@ namespace WTFGames.Hephaestus.UISystem
         public void Dismiss()
         {
             SceneManager.sceneLoaded -= SceneLoadedHandler;
+
+            // Destroy all live widgets first so their controllers run their teardown.
+            DismissAllWidgets();
+
+            // The UI camera and a self-created EventSystem live on separate root GameObjects
+            // (kept alive via DontDestroyOnLoad when shared), so they must be destroyed explicitly.
+            if (UiCamera != null)
+            {
+                Destroy(UiCamera.gameObject);
+            }
+
+            if (_ownsEventSystem && _eventSystem != null)
+            {
+                Destroy(_eventSystem.gameObject);
+            }
+
+            // Layers are children of this GameObject and are destroyed along with it.
+            Destroy(gameObject);
         }
 
         #region Private Methods
