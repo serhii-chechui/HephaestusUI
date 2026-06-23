@@ -136,7 +136,9 @@ namespace WTFGames.Hephaestus.UISystem.Tests
 
         private TestWidget NewWidget()
         {
-            return NewGameObject("TestWidget").AddComponent<TestWidget>();
+            var widget = new TestWidget();
+            _spawned.Add(widget.GameObject);
+            return widget;
         }
 
         private GameObject NewGameObject(string name)
