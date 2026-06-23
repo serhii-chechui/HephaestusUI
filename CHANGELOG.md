@@ -1,3 +1,16 @@
+## <small>2.3.0 (2026-06-23)</small>
+
+* fix(ui): support allowDuplicates by storing widgets per type in lists ([26e2404](https://github.com/serhii-chechui/HephaestusUI/commit/26e2404))
+* fix(ui): guard against NRE when sharedInstance has no UI camera ([26e2404](https://github.com/serhii-chechui/HephaestusUI/commit/26e2404))
+* fix(ui): DismissWidgetsInLayer now dismisses all widgets in the layer ([26e2404](https://github.com/serhii-chechui/HephaestusUI/commit/26e2404))
+* fix(ui): stop competing fade coroutines and activate before animated fade-in ([26e2404](https://github.com/serhii-chechui/HephaestusUI/commit/26e2404))
+* refactor(ui): make UIManagerHandler DI-owned and free resources on dispose ([767ea25](https://github.com/serhii-chechui/HephaestusUI/commit/767ea25))
+* fix(ui): add guards for missing library entries, controllers and UI layer ([2f9c4d8](https://github.com/serhii-chechui/HephaestusUI/commit/2f9c4d8))
+* chore(ui): remove non-functional preloader API, cache CanvasGroup, configurable fade duration ([eb1f221](https://github.com/serhii-chechui/HephaestusUI/commit/eb1f221))
+* docs: add full README (usage, setup, widget authoring) ([eb1f221](https://github.com/serhii-chechui/HephaestusUI/commit/eb1f221))
+
+
+
 ## <small>2.0.1 (2025-01-27)</small>
 
 * 2.0.1 ([2c29e4f](https://github.com/serhii-chechui/HephaestusUI/commit/2c29e4f))
