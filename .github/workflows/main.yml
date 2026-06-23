@@ -13,4 +13,4 @@
        steps:
        
        # Publish to Verdaccio
-       - run: npm publish --registry http://18.197.210.148:4873/
+       - run: npm publish --registry http://18.195.169.73:4873/
