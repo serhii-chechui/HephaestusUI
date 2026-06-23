@@ -1,0 +1,25 @@
+{
+    "name": "com.wtfgames.hephaestus.ui.tests.editor",
+    "rootNamespace": "WTFGames.Hephaestus.UISystem.Tests",
+    "references": [
+        "com.wtfgames.hephaestus.ui",
+        "UnityEngine.UI",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
