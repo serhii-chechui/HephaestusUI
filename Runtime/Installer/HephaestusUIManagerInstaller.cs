@@ -8,6 +8,12 @@ namespace WTFGames.Hephaestus.UISystem
         public override void InstallBindings()
         {
             Container.BindFactory<GameObject, IWidget, WidgetFactory>().FromFactory<CustomWidgetFactory>();
+
+            Container.Bind<UIManagerHandler>()
+                .FromNewComponentOnNewGameObject()
+                .WithGameObjectName("UIManagerHandler")
+                .AsSingle();
+
             Container.BindInterfacesTo<UIManager>().AsSingle();
         }
     }
