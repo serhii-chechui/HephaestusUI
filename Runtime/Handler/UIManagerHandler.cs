@@ -11,6 +11,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Rendering.Universal;
 #endif
 using UnityEngine.UI;
+using Zenject;
 
 namespace WTFGames.Hephaestus.UISystem
 {
@@ -23,9 +24,13 @@ namespace WTFGames.Hephaestus.UISystem
 
         #endregion
 
+        [Inject]
         private UIManagerConfig _uiManagerConfig;
-        private WidgetsLibrary _widgetLibrary;
+
+        [Inject]
         private WidgetFactory _widgetFactory;
+
+        private WidgetsLibrary _widgetLibrary;
 
         private Canvas _canvas;
         private CanvasScaler _canvasScaler;
@@ -34,14 +39,20 @@ namespace WTFGames.Hephaestus.UISystem
         private List<UILayer> _uiLayers;
 
         private EventSystem _eventSystem;
+        private bool _ownsEventSystem;
 
-        public void Initialize(UIManagerConfig uiManagerConfig, WidgetFactory widgetFactory)
+        public void Initialize()
         {
-            _uiManagerConfig = uiManagerConfig;
-
-            _widgetFactory = widgetFactory;
-
-            gameObject.layer = LayerMask.NameToLayer("UI");
+            var uiLayer = LayerMask.NameToLayer("UI");
+            if (uiLayer == -1)
+            {
+                Debug.LogError("UIManagerHandler: a 'UI' layer is not defined in Project Settings > Tags and Layers. " +
+                               "UI culling and rendering may behave incorrectly.");
+            }
+            else
+            {
+                gameObject.layer = uiLayer;
+            }
 
             if (_widgetLibrary == null)
             {
@@ -82,7 +93,10 @@ namespace WTFGames.Hephaestus.UISystem
                 uiCameraGo.transform.position = new Vector3(0, 0, -10);
 
                 UiCamera = uiCameraGo.AddComponent<Camera>();
-                UiCamera.cullingMask = 1 << LayerMask.NameToLayer("UI");
+                if (uiLayer != -1)
+                {
+                    UiCamera.cullingMask = 1 << uiLayer;
+                }
                 UiCamera.orthographic = _uiManagerConfig.orthographic;
                 UiCamera.orthographicSize = _uiManagerConfig.orthographicSize;
                 UiCamera.clearFlags = _uiManagerConfig.cameraClearFlags;
@@ -114,6 +128,7 @@ namespace WTFGames.Hephaestus.UISystem
                 newEventsSystem.AddComponent<StandaloneInputModule>();
                 #endif
                 _eventSystem = newEventsSystem.GetComponent<EventSystem>();
+                _ownsEventSystem = true;
             }
             else
             {
@@ -123,8 +138,16 @@ namespace WTFGames.Hephaestus.UISystem
             if (!_uiManagerConfig.sharedInstance) return;
 
             DontDestroyOnLoad(gameObject);
-            DontDestroyOnLoad(UiCamera.gameObject);
-            DontDestroyOnLoad(_eventSystem.gameObject);
+
+            if (UiCamera != null)
+            {
+                DontDestroyOnLoad(UiCamera.gameObject);
+            }
+
+            if (_eventSystem != null)
+            {
+                DontDestroyOnLoad(_eventSystem.gameObject);
+            }
 
             SceneManager.sceneLoaded += SceneLoadedHandler;
         }
@@ -132,6 +155,24 @@ namespace WTFGames.Hephaestus.UISystem
         public void Dismiss()
         {
             SceneManager.sceneLoaded -= SceneLoadedHandler;
+
+            // Destroy all live widgets first so their controllers run their teardown.
+            DismissAllWidgets();
+
+            // The UI camera and a self-created EventSystem live on separate root GameObjects
+            // (kept alive via DontDestroyOnLoad when shared), so they must be destroyed explicitly.
+            if (UiCamera != null)
+            {
+                Destroy(UiCamera.gameObject);
+            }
+
+            if (_ownsEventSystem && _eventSystem != null)
+            {
+                Destroy(_eventSystem.gameObject);
+            }
+
+            // Layers are children of this GameObject and are destroyed along with it.
+            Destroy(gameObject);
         }
 
         #region Private Methods
@@ -143,6 +184,7 @@ namespace WTFGames.Hephaestus.UISystem
 
         private void UpdateCameraStack()
         {
+            #if USE_URP
             var uiCameraData = UiCamera.GetUniversalAdditionalCameraData();
             uiCameraData.renderType = _uiManagerConfig.cameraRenderType;
             uiCameraData.requiresColorOption = CameraOverrideOption.Off;
@@ -173,6 +215,7 @@ namespace WTFGames.Hephaestus.UISystem
             {
                 Debug.LogWarning($"Within {SceneManager.GetActiveScene().name} MainCamera not found for stacking UI overlay camera.");
             }
+            #endif
         }
 
         private void CreateUILayers(UIManagerConfig uiManagerConfig)
@@ -223,7 +266,14 @@ namespace WTFGames.Hephaestus.UISystem
         public IWidget CreateUiWidgetWithData(Enum widgetType, object data, bool animate, bool allowDuplicates)
         {
             //Find related UILayer
-            var layer = _uiLayers[_widgetLibrary.GetLayerByType(widgetType)];
+            var layerIndex = _widgetLibrary.GetLayerByType(widgetType);
+            if (layerIndex < 0 || layerIndex >= _uiLayers.Count)
+            {
+                Debug.LogError($"Cannot create widget {widgetType}: layer index {layerIndex} is invalid.");
+                return null;
+            }
+
+            var layer = _uiLayers[layerIndex];
 
             //Check for UI Widgets Duplicates
             if (layer.IsWidgetTypeAlreadyExists(widgetType) && !allowDuplicates)
@@ -233,16 +283,27 @@ namespace WTFGames.Hephaestus.UISystem
             }
 
             //Instantiate new Widget Prefab
-            // var widgetPrefab = Instantiate(_widgetLibrary.GetPrefabByType(widgetType));
-            // widgetPrefab.name = $"{widgetType.ToLowerInvariant()}-{widgetGuid}";
+            var prefab = _widgetLibrary.GetPrefabByType(widgetType);
+            if (prefab == null)
+            {
+                // GetPrefabByType already logged the reason.
+                return null;
+            }
 
-            var widget = _widgetFactory.Create(_widgetLibrary.GetPrefabByType(widgetType));
+            var widget = _widgetFactory.Create(prefab);
 
             //Register it in UILayer
             layer.RegisterWidget(widgetType, widget);
 
             var controller = widget.Transform.GetComponent<IWidgetControllerWithData>();
-            controller.Initialize(widget, data);
+            if (controller == null)
+            {
+                Debug.LogError($"Widget {widgetType} prefab is missing an IWidgetControllerWithData component.");
+            }
+            else
+            {
+                controller.Initialize(widget, data);
+            }
 
             widget.Create();
             widget.Activate(animate);
@@ -310,11 +371,22 @@ namespace WTFGames.Hephaestus.UISystem
 
         public void DismissWidgetsInLayer(int layerIndex)
         {
-            var widgetsCount = _uiLayers[layerIndex].GetWidgetsCount();
-
-            if (_uiLayers[layerIndex] != null && widgetsCount > 0)
+            if (layerIndex < 0 || layerIndex >= _uiLayers.Count)
             {
-                _uiLayers[layerIndex].GetLastWidget().Dismiss();
+                Debug.LogWarning($"DismissWidgetsInLayer: layer index {layerIndex} is out of range.");
+                return;
+            }
+
+            var layer = _uiLayers[layerIndex];
+            if (layer == null)
+            {
+                return;
+            }
+
+            // GetAllWidgetsInLayer returns a snapshot, so dismissing (which mutates the layer) is safe here.
+            foreach (var widget in layer.GetAllWidgetsInLayer())
+            {
+                widget.Dismiss();
             }
         }
     }

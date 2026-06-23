@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 using Zenject;
 
 namespace WTFGames.Hephaestus.UISystem
@@ -8,55 +7,20 @@ namespace WTFGames.Hephaestus.UISystem
     {
         #region Private Variables
 
-        private GameObject _preloaderPrefab;
-
         [Inject]
-        private UIManagerConfig _uiManagerConfig;
-
-        [Inject]
-        private WidgetFactory _widgetFactory;
-
         private UIManagerHandler _uiManagerHandler;
 
         #endregion
 
         public void Initialize()
         {
-            Debug.Log("UIManager.Initialize");
-            _uiManagerHandler = new GameObject("UIManagerHandler").AddComponent<UIManagerHandler>();
-            _uiManagerHandler.Initialize(_uiManagerConfig, _widgetFactory);
+            _uiManagerHandler.Initialize();
         }
 
         public void Dispose()
         {
             _uiManagerHandler.Dismiss();
         }
-
-        #region Preloader
-
-        public void ShowPreloader()
-        {
-            //if(_preloaderWidget != null) {
-            //    _preloaderWidget.Activate(false);
-            //    _preloaderWidget.SetLoadingProgress(0);
-            //}
-        }
-
-        public void HidePreloader()
-        {
-            //if(_preloaderWidget != null) {
-            //    _preloaderWidget.Dismiss(true);
-            //}
-        }
-
-        public void SetPreloaderProgress(float progress)
-        {
-            //if(_preloaderWidget != null) {
-            //    _preloaderWidget.SetLoadingProgress(progress);
-            //}
-        }
-
-        #endregion
 
         #region Public Methods
 
