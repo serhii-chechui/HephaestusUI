@@ -47,6 +47,13 @@ namespace WTFGames.Hephaestus.UISystem
         #if USE_URP
         //public
         public CameraRenderType cameraRenderType;
+
+        // Optional renderer for the UI camera when it is an Overlay. The active URP quality
+        // tier's default renderer may be Deferred, which does not support camera stacking /
+        // overlay cameras. Assign a Forward/Forward+ renderer here (it must also be present in
+        // the URP asset's Renderer List). Referenced as an asset — not an index — because the
+        // renderer sits at different indices across quality tiers. Null = keep the default.
+        public ScriptableRendererData uiCameraRendererData;
         #endif
     }
 }

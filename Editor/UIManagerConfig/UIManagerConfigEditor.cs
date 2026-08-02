@@ -140,6 +140,16 @@ namespace WTFGames.Hephaestus.UISystem.Editor
             #if USE_URP
             uiManagerConfig.cameraRenderType =
  (CameraRenderType)EditorGUILayout.EnumPopup("Camera Render Type:", uiManagerConfig.cameraRenderType);
+
+            if (uiManagerConfig.cameraRenderType == CameraRenderType.Overlay)
+            {
+                uiManagerConfig.uiCameraRendererData =
+                    (UnityEngine.Rendering.Universal.ScriptableRendererData)EditorGUILayout.ObjectField(
+                        new GUIContent("UI Camera Renderer",
+                            "Renderer used by the Overlay UI camera. Pick a Forward/Forward+ renderer that is present in the URP asset's Renderer List. The tier's default renderer may be Deferred, which cannot render overlay cameras. Leave empty to keep the default."),
+                        uiManagerConfig.uiCameraRendererData,
+                        typeof(UnityEngine.Rendering.Universal.ScriptableRendererData), false);
+            }
             #endif
 
             EditorGUILayout.Space();

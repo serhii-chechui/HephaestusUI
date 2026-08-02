@@ -1,3 +1,9 @@
+## <small>2.4.0 (2026-08-02)</small>
+
+* feat(ui): let UIManagerConfig assign a renderer to the Overlay UI camera ([75837a3](https://github.com/serhii-chechui/HephaestusUI/commit/75837a3))
+
+
+
 ## <small>2.3.1 (2026-06-23)</small>
 
 * test(ui): add EditMode tests for UILayer and WidgetsLibrary ([f71b293](https://github.com/serhii-chechui/HephaestusUI/commit/f71b293))
