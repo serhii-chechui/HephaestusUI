@@ -8,6 +8,7 @@ using UnityEngine.InputSystem.UI;
 #endif
 using UnityEngine.SceneManagement;
 #if USE_URP
+using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 #endif
 using UnityEngine.UI;
@@ -189,7 +190,16 @@ namespace WTFGames.Hephaestus.UISystem
             uiCameraData.renderType = _uiManagerConfig.cameraRenderType;
             uiCameraData.requiresColorOption = CameraOverrideOption.Off;
             uiCameraData.requiresDepthOption = CameraOverrideOption.Off;
-                
+
+            // An Overlay camera must use a renderer that supports camera stacking. The active
+            // URP quality tier's default renderer may be Deferred (no overlay support), so let
+            // the config pin a Forward/Forward+ renderer for the UI camera.
+            if (_uiManagerConfig.cameraRenderType == CameraRenderType.Overlay &&
+                _uiManagerConfig.uiCameraRendererData != null)
+            {
+                ApplyUiCameraRenderer(uiCameraData, _uiManagerConfig.uiCameraRendererData);
+            }
+
             var mainCamera = Camera.main;
             if (mainCamera == null)
             {
@@ -217,6 +227,35 @@ namespace WTFGames.Hephaestus.UISystem
             }
             #endif
         }
+
+        #if USE_URP
+        /// <summary>
+        /// Assigns <paramref name="rendererData"/> to the UI overlay camera by resolving its index
+        /// in the currently active URP asset's renderer list. The asset must be present in that
+        /// Renderer List; the index is resolved at runtime because it differs between quality tiers.
+        /// </summary>
+        private static void ApplyUiCameraRenderer(UniversalAdditionalCameraData uiCameraData, ScriptableRendererData rendererData)
+        {
+            if (GraphicsSettings.currentRenderPipeline is not UniversalRenderPipelineAsset urpAsset)
+            {
+                return;
+            }
+
+            var rendererList = urpAsset.rendererDataList;
+            for (var i = 0; i < rendererList.Length; i++)
+            {
+                if (rendererList[i] == rendererData)
+                {
+                    uiCameraData.SetRenderer(i);
+                    return;
+                }
+            }
+
+            Debug.LogWarning($"UIManagerHandler: UI camera renderer '{rendererData.name}' is not in the active URP " +
+                             $"asset ('{urpAsset.name}') Renderer List, so the UI camera keeps its default renderer. " +
+                             "Add it to the Renderer List of every URP quality tier that uses this UI.");
+        }
+        #endif
 
         private void CreateUILayers(UIManagerConfig uiManagerConfig)
         {
